@@ -1,0 +1,8 @@
+{
+  "name": "guia-do-univesitario",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Leonardo A Alvarenga; Jeniffer Laila",
+  "license": "MIT",
+  "dependencies": {}
+}
