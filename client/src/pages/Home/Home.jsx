@@ -1,19 +1,38 @@
 // components
-import Navigation from "../../components/Navigation/Navigation";
+import Page from '../../components/Page/Page';
+import PostMiniature from '../../components/PostMiniature/PostMiniature';
 
 // styles
 import globalStyles from "../../App.style";
 import localStyles from "./Home.style";
+
+const content = [
+    {
+        title: 'teste',
+        text: 'oi',
+    },
+    {
+        title: 'teste',
+        text: 'oi',
+    },
+    {
+        title: 'teste',
+        text: 'oi',
+    }
+];
 
 const Home = () => {
     const globalClasses = globalStyles();
     const localClasses = localStyles();
 
     return (
-        <div className={globalClasses.page}>
-            <Navigation />
-            <h1>App!</h1>
-        </div>
+        <Page>
+            {
+                content.map((post, index) => (
+                    <PostMiniature title='oi' text={post.text} />
+                ))
+            }
+        </Page>
     );
 };
 
