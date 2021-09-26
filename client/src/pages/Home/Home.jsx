@@ -1,9 +1,10 @@
+import { Paper } from '@mui/material';
+
 // components
 import Page from '../../components/Page/Page';
-import PostMiniature from '../../components/PostMiniature/PostMiniature';
+import PostMiniature from '../../components/PostMiniature';
 
 // styles
-import globalStyles from "../../App.style";
 import localStyles from "./Home.style";
 
 const content = [
@@ -21,17 +22,21 @@ const content = [
     }
 ];
 
-const Home = () => {
-    const globalClasses = globalStyles();
+const Home = (props) => {
     const localClasses = localStyles();
 
     return (
-        <Page>
-            {
-                content.map((post, index) => (
-                    <PostMiniature title='oi' text={post.text} />
-                ))
-            }
+        <Page onThemeChange={props.onThemeChange} darkMode={props.darkMode}>
+
+            <Paper className={localClasses.miniContainer}>
+                <div>
+                    {
+                        content.map((post, index) => (
+                            <PostMiniature title='oi' text={post.text} darkMode={props.darkMode} />
+                        ))
+                    }
+                </div>
+            </Paper>
         </Page>
     );
 };

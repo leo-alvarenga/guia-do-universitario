@@ -1,7 +1,19 @@
 import { makeStyles } from '@material-ui/styles';
 import { colors } from '../../App.style';
 
-const localStyles = makeStyles(() => ({
+const localStyles = makeStyles((theme) => ({
+    post: {
+        maxWidth: '70%',
+        backgroundColor: '#f0f0f0',
+        margin: '0.5rem 0 0.5rem 0',
+    },
+
+    postDark: {
+        maxWidth: '70%',
+        backgroundColor: '#1b202a',
+        margin: '0.5rem 0 0.5rem 0',
+    },
+
     postMiniature: {
         width: '100%',
         minHeight: 'auto',
@@ -15,11 +27,6 @@ const localStyles = makeStyles(() => ({
         justifyItems: 'center',
         color: colors.black,
         zIndex: '20',
-    },
-    header: {
-    },
-    body: {
-
     },
 }));
 

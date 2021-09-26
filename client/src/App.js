@@ -1,22 +1,34 @@
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { useState } from 'react';
+import { connect, useDispatch } from 'react-redux';
+import { ThemeProvider } from '@mui/material/styles';
 
-// Public pages
 import Home from './pages/Home/Home';
-import NotFound from './pages/404/404';
+import { setTheme } from './store/theme';
+import { lightTheme, darkTheme } from './App.style';
+import { getThemeFromLocalData } from './store/theme';
 
-const App = () => {
-  return (
-    <>
-      <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet'></link>
+const App = (props) => {
+    const [darkMode, setDarkMode] = useState(getThemeFromLocalData() === 'dark');
+    const dispatch = useDispatch();
 
-      <BrowserRouter>
-        <Switch>
-          <Route exact path='/' component={Home} />
-          <Route component={NotFound} />
-        </Switch>
-      </BrowserRouter>
-    </>
-  );
+    const handleThemeChange = () => {
+        dispatch(setTheme(!darkMode));
+        setDarkMode(!darkMode);
+    };
+
+    return (
+        <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+            <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet'></link>
+            <Home onThemeChange={handleThemeChange} darkMode={darkMode}/>
+        </ThemeProvider>
+    );
 }
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+        darkMode: state.theme === 'dark',
+        theme: state.theme,
+    };
+};
+
+export default connect(mapStateToProps)(App);
