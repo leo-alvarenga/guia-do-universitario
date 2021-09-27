@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
 import { ThemeProvider } from '@mui/material/styles';
 
-import Home from './pages/Home/Home';
+import Home from './Home/Home';
 import { setTheme } from './store/theme';
 import { lightTheme, darkTheme } from './App.style';
 import { getThemeFromLocalData } from './store/theme';

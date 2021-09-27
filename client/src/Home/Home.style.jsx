@@ -1,16 +1,16 @@
 import { makeStyles } from '@material-ui/styles';
 
 const localStyles = makeStyles(() => ({
-    page: {
-        display: 'flex',
+    wrapper: {
+        display: 'grid',
         alignItems: 'center',
         justifyItems: 'center'
     },
     
     miniContainer: {
-        maxWidth: '50%',
         padding: '1rem',
-    }
+        minWidth: '80%',
+    },
 }));
 
 export default localStyles;

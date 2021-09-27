@@ -44,7 +44,7 @@ const PostMiniature = (props) => {
             }
 
             <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography sx={{textAlign: 'center'}} gutterBottom variant="h5" component="div">
                     {content.title}
                 </Typography>
 
