@@ -9,7 +9,7 @@ const localStyles = makeStyles((theme) => ({
     post: {
         backgroundColor: '#f0f0f0',
         margin: '0.5rem 0 0.5rem 0',
-        transition: 'all 0.5s',
+        transition: 'all 1s linear',
 
         '&:hover': {
             transform: 'translateY(-3px) scale(1.01)',
@@ -19,7 +19,7 @@ const localStyles = makeStyles((theme) => ({
     postDark: {
         backgroundColor: '#1b202a',
         margin: '0.5rem 0 0.5rem 0',
-        transition: 'all 0.5s',
+        transition: 'all 1s linear',
 
         '&:hover': {
             transform: 'translateY(-3px) scale(1.01)',

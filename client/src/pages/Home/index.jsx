@@ -64,7 +64,7 @@ const Home = (props) => {
             if (posts.length > 0) {
                 return (
                     posts.map((post, index) => (
-                        <PostMiniature id={post.post_id} title={post.title} text={post.body} darkMode={props.darkMode} />
+                        <PostMiniature id={post.post_id} title={post.title} body={post.body} darkMode={props.darkMode} />
                     ))
                 );
             } else {

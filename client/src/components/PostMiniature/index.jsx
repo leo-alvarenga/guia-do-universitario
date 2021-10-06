@@ -1,14 +1,12 @@
 // react
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // routes
 import { Link } from "react-router-dom";
 
 // mui
-import { Card, CardContent, CardMedia, CardActions, Typography, IconButton } from "@mui/material";
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
-import ShareIcon from '@mui/icons-material/Share';
+import { Card, CardContent, CardMedia, CardActions, Typography, IconButton, Zoom } from "@mui/material";
+import { FavoriteBorderOutlined, FavoriteOutlined, Share } from '@mui/icons-material';
 
 // util
 import { getSummarizedText } from "./PostMiniature.util";
@@ -18,11 +16,12 @@ const PostMiniature = (props) => {
     const [content, setContent] = useState({
         postId: props.id,
         title: props.title || "Untitled",
-        text: getSummarizedText(props.text) || "Empty...",
+        text: getSummarizedText(props.body) || "Empty...",
         image: props.image,
     });
 
     const [meta, setMeta] = useState({
+        ready: false,
         favorite: props.favorite || false,
     });
 
@@ -36,9 +35,13 @@ const PostMiniature = (props) => {
 
     };
 
+    useEffect(() => {
+        setMeta({ ...meta, ready: true, });
+    }, []);
+
     return(
-        <Link className={localClasses.postAnchor} to={() => `/read/${content.postId}`}>
-            <Card sx={{backgroundColor: props.darkMode && '#1b202a'}} className={localClasses.post} >
+        <Card sx={{backgroundColor: props.darkMode && '#1b202a'}} className={localClasses.post}>
+            <Link className={localClasses.postAnchor} to={() => `/read/${content.postId}`}>
                 {
                     content.image ? (
                         <CardMedia 
@@ -51,7 +54,7 @@ const PostMiniature = (props) => {
                 }
 
                 <CardContent>
-                    <Typography sx={{textAlign: 'center'}} gutterBottom variant="h5" component="div">
+                    <Typography sx={{textAlign: 'center'}} gutterBottom variant="h5" component="div" color="text.primary">
                         {content.title}
                     </Typography>
 
@@ -60,24 +63,24 @@ const PostMiniature = (props) => {
                     </Typography>
                 </CardContent>
 
-                <CardActions>
-                    <IconButton onClick={handleFavorite}>
-                        {
-                            meta.favorite ? (
-                                <FavoriteOutlinedIcon />
-                            ) : (
-                                <FavoriteBorderOutlinedIcon />
-                            )
-                        }
-                    </IconButton>
+            </Link>
+            <CardActions>
+                <IconButton onClick={handleFavorite}>
+                    {
+                        meta.favorite ? (
+                            <FavoriteOutlined />
+                        ) : (
+                            <FavoriteBorderOutlined />
+                        )
+                    }
+                </IconButton>
 
-                    <IconButton onClick={handleShare}>
-                        <ShareIcon />
-                    </IconButton>
-                </CardActions>
+                <IconButton onClick={handleShare}>
+                    <Share />
+                </IconButton>
+            </CardActions>
 
-            </Card>
-        </Link>
+        </Card>
     );
 };
 

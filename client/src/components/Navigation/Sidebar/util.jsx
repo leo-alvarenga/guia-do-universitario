@@ -3,19 +3,19 @@ import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 const sidebarItems = [
     [
         {
-            title: '1',
+            title: 'Jeniffer Laila',
             icon: <FavoriteOutlinedIcon />,
         },
         {
-            title: '2',
+            title: 'Leonardo A. Alvarenga',
             icon: <FavoriteOutlinedIcon />,
         },
         {
-            title: '3',
+            title: 'Leonardo A. Alvarenga',
             icon: <FavoriteOutlinedIcon />,
         },
         {
-            title: '4',
+            title: 'Jeniffer Laila',
             icon: <FavoriteOutlinedIcon />
         }
     ],
