@@ -1,11 +1,23 @@
 import { useState } from 'react';
-import { connect, useDispatch } from 'react-redux';
-import { ThemeProvider } from '@mui/material/styles';
 
-import Home from './Home/Home';
+// routes
+import { BrowserRouter, Route } from 'react-router-dom';
+
+// redux
+import { connect, useDispatch } from 'react-redux';
+
+// theming
+import { ThemeProvider } from '@mui/material';
 import { setTheme } from './store/theme';
 import { lightTheme, darkTheme } from './App.style';
 import { getThemeFromLocalData } from './store/theme';
+
+// components
+import Page from './components/Page/Page';
+
+// Pages
+import Home from './pages/Home';
+import Read from './pages/Read';
 
 const App = (props) => {
     const [darkMode, setDarkMode] = useState(getThemeFromLocalData() === 'dark');
@@ -18,8 +30,26 @@ const App = (props) => {
 
     return (
         <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+        
             <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet'></link>
-            <Home onThemeChange={handleThemeChange} darkMode={darkMode}/>
+
+            <Page onThemeChange={handleThemeChange} darkMode={darkMode}>
+
+                <BrowserRouter>
+                    <Route 
+                        path='/'
+                        exact
+                        render={(props) => (<Home darkMode={darkMode} />)}
+                    />
+                    <Route
+                        path='/read/:post_id'
+                        exact
+                        component={Read}
+                    />
+                </BrowserRouter>
+            </Page>
+
+
         </ThemeProvider>
     );
 }

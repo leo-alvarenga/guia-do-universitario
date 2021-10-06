@@ -1,4 +1,4 @@
-export const getSummarizedText = (maxLength, text) => {
+export const getSummarizedText = (text, maxLength) => {
     const max = maxLength || 40;
     
     if (text) {

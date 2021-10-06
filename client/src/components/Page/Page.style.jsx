@@ -5,9 +5,12 @@ const localStyles = makeStyles(() => ({
         position: 'relative',
         margin: '1rem',
         padding: '0.5rem',
-        border: '1px solid black',
         borderRadius: '0.5rem',
     },
+    wrapper: {
+        minHeight: '100vh',
+        borderRadius: '0',
+    }
 }));
 
 export default localStyles;
