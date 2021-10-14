@@ -1,4 +1,5 @@
 const { MongoClient, MongoRuntimeError } = require('mongodb');
+const mongoose = require('mongoose')
 const env = require('dotenv').config('../');
 
 const uri = env.parsed.ATLAS_URI;
