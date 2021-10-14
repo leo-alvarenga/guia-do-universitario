@@ -18,6 +18,7 @@ import Page from './components/Page/Page';
 // Pages
 import Home from './pages/Home';
 import Read from './pages/Read';
+import Dashboard from './pages/Dashboard';
 
 const App = (props) => {
     const [darkMode, setDarkMode] = useState(getThemeFromLocalData() === 'dark');
@@ -45,6 +46,11 @@ const App = (props) => {
                         path='/read/:post_id'
                         exact
                         component={Read}
+                    />
+                    <Route
+                        path='/dashboard'
+                        exact
+                        component={Dashboard}
                     />
                 </BrowserRouter>
             </Page>
