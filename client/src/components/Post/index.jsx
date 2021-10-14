@@ -23,11 +23,21 @@ const Post = (props) => {
 
     const { post_id } = useParams();
 
+    /** Post data
+     * Properties:
+     * - title
+     * - subtitle
+     * - body
+     * - img
+     */
     const [data, setData] = useState({});
     const [err, setErr] = useState(false);
 
     const dispatch = useDispatch();
 
+    /** Get a fallback Image in case the post does not contain a cover picture and/or the picture recovery has failed. 
+     * @returns String : A string containing an URL to a randomly selected cat image provided by Cat API
+    */
     const getFallbackImage = async () => {
         try {
             axios.defaults.headers.common['x-api-key'] = '6ca8360c-05b3-492d-b1ec-26bbd410ef89';
@@ -68,19 +78,26 @@ const Post = (props) => {
             return (
                 <>
 
+                    {
+                        data.img &&
+                        (
+                            <Paper variant="outlined">
+                                <img src={data.img} />
+                            </Paper>
+                        )
+                    }
+
                     <Typography variant="h1" color="text.primary" className={localClasses.title}>
                         {data.title}
                     </Typography>
 
                     {
-                        !data.subtitle ? 
+                        !data.subtitle &&
                         (
                             <Typography variant="h3" color="text.primary" className={localClasses.body}>
                                 {data.subtitle}
                             </Typography>
                         )
-                        :
-                        null
                     }
 
                     <Typography variant="p" color="text.primary" className={localClasses.body}>
