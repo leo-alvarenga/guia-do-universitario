@@ -12,17 +12,17 @@ const app = express();
 connectDataBase();
 
 app.use(cors());
-app.use(body_parser.json())
+app.use(body_parser.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/api/', require('./routes'));
 
-app.get('/*', (req, res) => {
-    res.redirect('/');
-});
-
 app.get('/', (req, res) => {
     res.status(200).send('Finished');
+});
+
+app.all('/*', (req, res) => {
+    res.redirect('/');
 });
 
 app.listen(PORT, () => {

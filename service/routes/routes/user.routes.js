@@ -4,7 +4,7 @@ const { statusCode, DB_NAME, USER_COLLECTION_NAME } = require('../util');
 
 const { databaseClient } = require('../../db/database');
 
-userRouter.get('/auth/:username', async (req, res) => {
+userRouter.get('/:username', async (req, res) => {
     const username = req.params['username'];
 
     try {
@@ -22,7 +22,7 @@ userRouter.get('/auth/:username', async (req, res) => {
 
 userRouter.post('/new', async (req, res) => {
     try {
-        const body = { ...req.body, ROLE: 'user' };
+        const body = { ...req.body, role: 'user' };
 
         await databaseClient.db(DB_NAME).collection(USER_COLLECTION_NAME).insertOne(body);
 
@@ -39,10 +39,13 @@ userRouter.put('/update', async (req, res) => {
         const query = { 'username': `${body.username}`};
         const { _id, ...user } = body;
 
-        await databaseClient.db(DB_NAME).collection(USER_COLLECTION_NAME).updateOne(query, user);
+        const userQuery = { $set: { ...user } };
+
+        await databaseClient.db(DB_NAME).collection(USER_COLLECTION_NAME).updateOne(query, userQuery);
 
         res.status(statusCode.OK).send('Ok');
     } catch (error) {
+        console.log(error);
         res.status(statusCode.BAD_REQUEST).send('Failed');
     }
 });
