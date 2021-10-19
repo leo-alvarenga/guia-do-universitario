@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 
-import { useSelector, useDispatch } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { setLoading } from '../../store/loading'
 
 // styles
@@ -16,7 +16,6 @@ import PostMiniatureSkeleton from '../../components/PostMiniature/loading';
 
 const Home = (props) => {
     const localClasses = localStyles();
-    const loading = useSelector((state) => state.loading);
 
     const [posts, setPosts] = useState([]);
     const [err, setErr] = useState(false);
@@ -32,14 +31,11 @@ const Home = (props) => {
             setPosts(response.data?.posts);
             setErr(false);
         } catch (error) {
-            console.log(error);
             setErr(true);
         } finally {
             dispatch(setLoading(false));
         }
     };
-
-    useEffect(() => getPosts(), []);
 
     const loadingSkeleton = () => (
         posts.map((post) => (
@@ -64,7 +60,15 @@ const Home = (props) => {
             if (posts.length > 0) {
                 return (
                     posts.map((post, index) => (
-                        <PostMiniature id={post.post_id} title={post.title} body={post.body} darkMode={props.darkMode} />
+                        <PostMiniature 
+                            id={post.post_id}
+                            title={post.title}
+                            author={post.author}
+                            date={post.date}
+                            subtitle={post.subtitle}
+                            body={post.body}
+                            darkMode={props.darkMode}
+                        />
                     ))
                 );
             } else {
@@ -78,16 +82,21 @@ const Home = (props) => {
         }
     };
 
+    useEffect(() => getPosts(), []);
+
     return (
         <div className={localClasses.wrapper}>
             <Paper className={localClasses.miniContainer}>
                 <div>
-            
-                    { loading === true ? loadingSkeleton() : content() }
+                    { props.loading === true ? loadingSkeleton() : content() }
                 </div>                        
             </Paper>
         </div>
     );
 };
 
-export default Home;
+const mapStateToProps = (state) => ({
+    loading: state.loading,
+});
+
+export default connect(mapStateToProps)(Home);
