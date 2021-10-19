@@ -55,6 +55,7 @@ const UpdatePost = (props) => {
     });
 
     const [notification, setNotification] = useState(0);
+    const [notificationMsg, setNotificationMsg] = useState('');
 
     const getAll = async () => {
         try {
@@ -76,6 +77,13 @@ const UpdatePost = (props) => {
         return false;
     };
 
+    const changeNotificationMessage = () => {
+        if (notification === 1)
+            setNotificationMsg(`Post '${post.title}' foi atualizado com sucesso.`);
+        else
+            setNotificationMsg('Um erro ocorreu. Tente novamente.');
+    };
+
     const updateRequest = async () => {
         if (postHasChanges() === true) {
             try {
@@ -84,18 +92,24 @@ const UpdatePost = (props) => {
                 setNotification(1);
             } catch (error) {
                 setNotification(2);
+            } finally {
+                changeNotificationMessage();
             }
         }
     };
 
     const deleteRequest = async () => {
         try {
-            const response = await axios.delete('http://localhost:8080/api/posts/delete', { post_id: post.post_id });
+            const response = await axios.delete(`http://localhost:8080/api/posts/delete/${post.username}/${post.post_id}`);
+
+            console.log('r', response);
 
             if (response.status === 200)
                 setNotification(1);
         } catch (error) {
             setNotification(2);
+        } finally {
+            changeNotificationMessage();
         }
     };
 
@@ -108,10 +122,12 @@ const UpdatePost = (props) => {
     
     useEffect(() => {
         if (chosen) {
-            const p = docs[chosen];
+            const p = docs[parseInt(chosen)];
 
-            setPost({ ...p, });
+            setPost({ username: post.username, ...p, });
             setCopy({ ...p, });
+
+            console.log(chosen, post);
         }
     }, [chosen]);
 
@@ -127,7 +143,7 @@ const UpdatePost = (props) => {
                 >
                     {
                         docs.map((post, index) => (
-                            <MenuItem value={index}>{post.title}</MenuItem>
+                            <MenuItem key={index} value={index}>{post.title}</MenuItem>
                         ))
                     }
                 </Select>
@@ -196,11 +212,7 @@ const UpdatePost = (props) => {
             <Notification 
                 open={notification !== 0}
                 onClose={() => setNotification(0)}
-                message={
-                    notification === 1 
-                    ? `Post '${post.title}' foi atualizado com sucesso`
-                    : 'Um erro ocorreu. Tente novamente.'
-                }
+                message={notificationMsg}
             />
 
         </>

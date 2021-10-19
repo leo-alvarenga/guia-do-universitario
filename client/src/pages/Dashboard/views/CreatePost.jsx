@@ -40,6 +40,7 @@ const CreatePost = (props) => {
     const classes = useStyles();
 
     const [notification, setNotification] = useState(0);
+    const [notificationMsg, setNotificationMsg] = useState('');
 
     const [post, setPost] = useState({
         username: props.username,
@@ -50,14 +51,17 @@ const CreatePost = (props) => {
         body: '',
     });
 
-    const notificationMessage = () => {
+    const changeNotificationMessage = () => {
         switch (notification) {
             default:
-                return 'Se certifique de que o post possua um corpo e um título antes de postar.';
+                setNotificationMsg('Se certifique de que o post possua um corpo e um título antes de postar.');
+                break;
             case 2: 
-                return `Post '${post.title}' foi atualizado com sucesso.`;
+                setNotificationMsg(`Post '${post.title}' foi atualizado com sucesso.`);
+                break;
             case 3:
-                return 'Um erro ocorreu. Tente novamente.';
+                setNotificationMsg('Um erro ocorreu. Tente novamente.');
+                break;
         }
     };
 
@@ -74,13 +78,18 @@ const CreatePost = (props) => {
             try {
                 const response = await axios.post('http://localhost:8080/api/posts/new', post);
     
+                console.log(response.status)
                 setNotification(2);
             } catch (error) {
                 setNotification(3);
+            } finally {
+                changeNotificationMessage();
             }
         } else {
             setNotification(1);
         }
+
+        changeNotificationMessage();
     };
 
     return (
@@ -129,7 +138,7 @@ const CreatePost = (props) => {
             <Notification 
                 open={notification !== 0}
                 onClose={() => setNotification(0)}
-                message={() => notificationMessage()}
+                message={notificationMsg}
             />
 
         </>

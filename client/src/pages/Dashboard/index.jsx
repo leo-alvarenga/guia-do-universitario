@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 
 // mui
 import { Paper, Box, Tabs, Tab } from '@mui/material';
-import localStyles from './Dashboard.style';
 
 // components
 import CreatePost from './views/CreatePost';
@@ -17,7 +16,6 @@ import UpdatePost from './views/UpdatePost';
 import Erro from '../../components/Alerts/Erro';
 
 const Dashboard = (props) => {
-    const localClasses = localStyles();
     const history = useHistory();
 
     const [currentView, setView] = useState(0);
@@ -36,7 +34,7 @@ const Dashboard = (props) => {
         <Paper>
 
             {
-                props.user.isAuth === true && props.user.role === 'admin'
+                props.user.isAuth === true && props.user.role === "admin"
                 ? (
                     <>
                         <Box>
@@ -57,18 +55,20 @@ const Dashboard = (props) => {
                         </Box>
                     </>
                 )
-                : <Erro
-                    message="Você não possui permissão para continuar aqui"
-                    label="Voltar para a página principal"
-                    onClick={redirect}
-                />
+                : (
+                    <Erro
+                        message="Você não possui permissão para continuar aqui"
+                        label="Voltar para a página principal"
+                        onClick={redirect}
+                    />
+                )
             }
         </Paper>
     );
 };
 
 const mapStateToProps = (state) => ({
-    user: state.user,
+    user: state.user.value,
 });
 
 export default connect(mapStateToProps)(Dashboard);

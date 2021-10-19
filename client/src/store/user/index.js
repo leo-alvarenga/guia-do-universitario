@@ -63,16 +63,12 @@ export const user = createSlice({
         newFavorite: (state, action) => {
             const n = state.value.favorites;
             state.value.favorites = [ ...n, action.payload ];
-            
-            console.log(state.value.favorites);
 
             updateUser(state.value.username, state.value.favorites, state.value.role);
         },
         removeFavorite: (state, action) => {
 
             state.value.favorites = state.value.favorites.filter(el => el !== action.payload);
-
-            console.log(state.value.favorites);
 
             updateUser(state.value.username, state.value.favorites, state.value.role);
         },

@@ -18,6 +18,7 @@ const LoginDialog = (props) => {
     const [newUser, setNewUser] = useState(false);
 
     const [notification, setNotification] = useState(0);
+    const [notificationMsg, setNotificationMsg] = useState('');
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -25,7 +26,9 @@ const LoginDialog = (props) => {
     const authUser = async (username, newUser) => {
         try {
             if (username) {
-                const response = await axios.get(`http://localhost:8080/api/user/auth/${username}`);
+                const response = await axios.get(`http://localhost:8080/api/user/${username}`);
+
+                console.log(response);
                 if (response.status === 200) {
                     return await response.data?.result;
                 } else {
@@ -52,6 +55,7 @@ const LoginDialog = (props) => {
     const verifyUser = async () => {
         try {
             const user = await authUser(username, newUser);
+            console.log('verify', user);
 
             if (user !== undefined) {
                 dispatch(loggedIn({ ...user }));
@@ -64,17 +68,21 @@ const LoginDialog = (props) => {
             setNotification(3); // 400
         } finally {
             props.onClose();
+            notificationMessage();
         }
     };
 
     const notificationMessage = () => {
         switch (notification) {
-            default:
-                return `Você efetuou login como '${username}'.`;
+            case 1:
+                setNotificationMsg(`Você efetuou login como '${username}'.`);
+                break;
             case 2: 
-                return `O usuário '${username}' não existe.`;
+                setNotificationMsg(`O usuário '${username}' não existe.`);
+                break;
             case 3:
-                return `Não foi possível efetuar login como '${username}'.`;
+                setNotificationMsg(`Não foi possível efetuar login como '${username}'.`);
+                break;
         }
     };
 
@@ -127,7 +135,7 @@ const LoginDialog = (props) => {
             <Notification
                 open={notification !== 0}
                 onClose={() => setNotification(0)}
-                message={() => notificationMessage()}
+                message={notificationMsg}
             />
         </>
     );

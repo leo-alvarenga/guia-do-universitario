@@ -1,8 +1,14 @@
+import { useHistory } from 'react-router';
+
 import { Menu, MenuItem, IconButton, Avatar } from '@mui/material';
 import { AccountCircle, Edit as EditIcon } from '@mui/icons-material';
 
 const NavbarMenu = (props) => {
-    const s = "a";
+    const history = useHistory();
+
+    const dashboardRedirect = () => {
+        history.push('/');
+    };
 
     const content = () => {
         if (props.user.isAuth) {
@@ -39,7 +45,7 @@ const NavbarMenu = (props) => {
                         {
                             props.user.role === 'admin'
                             ? (
-                                <MenuItem>
+                                <MenuItem onClick={dashboardRedirect}>
                                     <EditIcon />
                                     Dashboard
                                 </MenuItem>
@@ -47,8 +53,8 @@ const NavbarMenu = (props) => {
                             : null
                         }
 
-                        <MenuItem>
-                            Logged
+                        <MenuItem onClick={props.onLogin}>
+                            Switch Account
                         </MenuItem>
                     </Menu>
                 </>

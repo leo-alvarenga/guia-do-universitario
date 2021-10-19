@@ -60,7 +60,6 @@ const Post = (props) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/posts/${props.postId}`);
 
-            console.log(response);
             if (response.status === 200) {
                 setData(response?.data?.id_search);
 

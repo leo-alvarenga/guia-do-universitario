@@ -29,11 +29,11 @@ const getSidebarItems = (classes) => (
             <Divider />
 
             {
-                getSidebarItemsList().map((row) => (
-                    <>
+                getSidebarItemsList().map((row, index) => (
+                    <div key={index}>
                         {
-                            row.map((item) => (
-                                <ListItem className={classes.sidebarItem}>
+                            row.map((item, index) => (
+                                <ListItem className={classes.sidebarItem} key={index}>
                                     <div className={classes.sidebarItemIcon}>
                                     {item.icon}
                                     </div>
@@ -45,7 +45,7 @@ const getSidebarItems = (classes) => (
                         }
 
                         <Divider />
-                    </>
+                    </div>
                 ))
             }
         </List>

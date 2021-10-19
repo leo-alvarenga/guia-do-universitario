@@ -59,7 +59,6 @@ const PostMiniature = (props) => {
 
     useEffect(() => {
         setMeta({ ...meta, ready: true, favorite: content.postId in favorites, });
-        console.log(favorites);
     }, []);
 
     return(

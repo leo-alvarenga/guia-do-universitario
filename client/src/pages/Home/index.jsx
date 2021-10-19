@@ -38,8 +38,8 @@ const Home = (props) => {
     };
 
     const loadingSkeleton = () => (
-        posts.map((post) => (
-            <PostMiniatureSkeleton />
+        posts.map((post, index) => (
+            <PostMiniatureSkeleton key={index} />
         ))
     );
 
@@ -60,7 +60,8 @@ const Home = (props) => {
             if (posts.length > 0) {
                 return (
                     posts.map((post, index) => (
-                        <PostMiniature 
+                        <PostMiniature
+                            key={index}
                             id={post.post_id}
                             title={post.title}
                             author={post.author}
