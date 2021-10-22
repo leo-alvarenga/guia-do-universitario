@@ -1,8 +1,9 @@
 const postRouter = require('express').Router();
+const ObjectId = require('mongodb').ObjectId;
 
 const { databaseClient } = require('../../db/database');
-
 const { statusCode, DB_NAME, POST_COLLECTION_NAME } = require('../util');
+const authUser = require('./auth');
 
 // get all posts
 postRouter.get('/', async (req, res) => {
@@ -69,20 +70,56 @@ postRouter.put(('/update'), async (req, res) => {
         
         try {
             const query = { 'post_id': `${body.post_id}`  };
-            const { _id, ...post } = body;
-            
-            const postQuery = { $set: { ...post } };
+            const { _id, username, ...post } = body;
+
+            const auth = authUser(username);
+
+            if (auth === statusCode.OK) {
+                const postQuery = { $set: { ...post } };
     
-            await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).updateOne(query, postQuery);
-            
-            res.status(statusCode.OK).send('Ok');
+                await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).updateOne(query, postQuery);
+                
+                res.status(statusCode.OK).send('Ok');
+            } else {
+                res.status(auth).send(`Failed with code ${auth}.`);
+            }
         } catch (error) {
-            res.status(statusCode.NOT_ACCEPTABLE).send('It does not seem like the post wanted exists...');
+            res.status(statusCode.NOT_ACCEPTABLE).send('It does not seem like the post you are looking for exists...');
         }
     } else {
         res.status(statusCode.BAD_REQUEST).send('Failed');
     }
 });
 
+postRouter.delete("/delete/:username/:post_id", async (req, res) => {
+    const { post_id, username } = req.params;
+    
+    try {
+        const auth = await authUser(username);
+
+        if (auth === statusCode.OK) {
+            const findQuery = { post_id: `${post_id}` };
+
+            const r = await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).findOne({ post_id });
+
+            if (r !== null) {
+                const deleteQuery = { _id: ObjectId(r._id) };
+
+                const a = await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).deleteOne(deleteQuery);
+
+                if (a?.deletedCount > 0)
+                    res.status(statusCode.OK).send('Ok');
+                else
+                    res.status(statusCode.BAD_REQUEST).send('Failed');
+            } else {
+                res.status(statusCode.NOT_FOUND).send('Not found');
+            }
+        } else {
+            res.status(auth).send(`Failed with code ${auth}.`);
+        }
+    } catch (error) {
+        res.status(statusCode.NOT_ACCEPTABLE).send('It does not seem like the post you are looking for exists...');
+    }
+});
 
 module.exports = postRouter;

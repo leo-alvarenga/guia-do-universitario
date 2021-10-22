@@ -4,7 +4,5 @@
   "main": "index.js",
   "author": "Leonardo A Alvarenga; Jeniffer Laila",
   "license": "MIT",
-  "dependencies": {
-    "swagger-ui-express": "^4.1.6"
-  }
+  "dependencies": {}
 }
