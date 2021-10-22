@@ -1,6 +1,3 @@
-// routes
-import { useParams } from 'react-router-dom';
-
 // axios
 import axios from 'axios';
 
@@ -16,12 +13,10 @@ import { Paper, Typography } from "@mui/material";
 import localStyles from './Post.style';
 
 // components
-import ErroRequest from '../Alerts/ErroRequest';
+import Erro from '../Alerts/Erro';
 
 const Post = (props) => {
     const localClasses = localStyles();
-
-    const { post_id } = useParams();
 
     /** Post data
      * Properties:
@@ -30,18 +25,26 @@ const Post = (props) => {
      * - body
      * - img
      */
-    const [data, setData] = useState({});
-    const [err, setErr] = useState(false);
+    const [data, setData] = useState({
+        postId: props.postId,
+        img: '',
+        title: '',
+        author: '',
+        date: '',
+        subtitle: '',
+        body: '',
+    });
+    const [err, setErr] = useState(0);
 
     const dispatch = useDispatch();
 
     /** Get a fallback Image in case the post does not contain a cover picture and/or the picture recovery has failed. 
      * @returns String : A string containing an URL to a randomly selected cat image provided by Cat API
+     * @deprecated
     */
     const getFallbackImage = async () => {
         try {
             axios.defaults.headers.common['x-api-key'] = '6ca8360c-05b3-492d-b1ec-26bbd410ef89';
-
 
             const response = await axios.get('https://api.thecatapi.com/v1/images/search', { params: { limit:1, size:"full" } } );
 
@@ -55,31 +58,35 @@ const Post = (props) => {
         dispatch(setLoading(true));
 
         try {
-            const response = await axios.get(`http://localhost:8080/api/post/${post_id}`)
+            const response = await axios.get(`http://localhost:8080/api/posts/${props.postId}`);
 
             if (response.status === 200) {
-                setData(response.data.id_search);
+                setData(response?.data?.id_search);
 
-                getFallbackImage();
+                setErr(0);
+            } else if (response.status === 404) {
+                setErr(2);
+            } else {
+                setErr(1);
             }
-
-            setErr(false);
         } catch (error) {
-            setErr(true);
+            setErr(1);
         } finally {
             dispatch(setLoading(false));
         }
     };
 
     const content = () => {
-        if (err) {
-            return <ErroRequest onClick={getPost} />
+        if (err === 1) {
+            return <Erro onClick={getPost}/>;
+        } else if (err === 2) {
+            return <Erro type="404" />;
         } else {
             return (
                 <>
 
                     {
-                        data.img &&
+                        data?.img &&
                         (
                             <Paper variant="outlined">
                                 <img src={data.img} />
@@ -91,10 +98,23 @@ const Post = (props) => {
                         {data.title}
                     </Typography>
 
+                    <Typography gutterBottom variant="caption" component="div" color="text.disabled">
+                        {
+                            data.author !== undefined
+                            ? `Por: '${data.author}'`
+                            : null
+                        }
+                        {
+                            data.date !== undefined
+                            ? ` em ${data.date}`
+                            : null
+                        }
+                    </Typography>
+
                     {
-                        !data.subtitle &&
+                        data.subtitle &&
                         (
-                            <Typography variant="h3" color="text.primary" className={localClasses.body}>
+                            <Typography variant="h5" color="text.disabled" className={localClasses.sub}>
                                 {data.subtitle}
                             </Typography>
                         )

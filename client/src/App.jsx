@@ -64,6 +64,8 @@ const mapStateToProps = (state) => {
     return {
         darkMode: state.theme === 'dark',
         theme: state.theme,
+        loading: state.loading,
+        user: state.user,
     };
 };
 

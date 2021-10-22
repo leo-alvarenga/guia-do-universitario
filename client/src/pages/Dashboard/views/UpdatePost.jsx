@@ -5,8 +5,11 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // mui
-import { FormControl, InputLabel, Select, MenuItem, TextField, Button } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, TextField, Stack, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+
+// components
+import Notification from '../../../components/Alerts/Notification';
 
 const useStyles = makeStyles(() => ({
     textSmall: {
@@ -20,25 +23,39 @@ const useStyles = makeStyles(() => ({
     },
 
     submitButton: {
-        width: '6rem',
-        margin: '1rem 0 1rem 0',
+        height: '3rem',
     },
 }));
 
 const UpdatePost = (props) => {
     const classes = useStyles();
-
-    const [post, setPost] = useState({
-        post_id: '',
-        title: '',
-        subtitle: '',
-        body: '',
-    });
-
+    
     const [chosen, setChosen] = useState(0);
     const [ready, setReady] = useState(false);
 
     const [docs, setDocs] = useState([]);
+
+    const [post, setPost] = useState({
+        username: props.username,
+        post_id: '',
+        title: '',
+        author: '',
+        date: '',
+        subtitle: '',
+        body: '',
+    });
+
+    const [copy, setCopy] = useState({
+        post_id: '',
+        title: '',
+        author: '',
+        date: '',
+        subtitle: '',
+        body: '',
+    });
+
+    const [notification, setNotification] = useState(0);
+    const [notificationMsg, setNotificationMsg] = useState('');
 
     const getAll = async () => {
         try {
@@ -52,28 +69,67 @@ const UpdatePost = (props) => {
         }
     };
 
-    const updateRequest = async () => {
-        try {
-            const response = await axios.put('http://localhost:8080/api/posts/update', post);
+    const postHasChanges = () => {
+        if (post.title !== copy.title || post.author !== copy.author || post.subtitle !== copy.subtitle || post.body !== copy.body) {
+            return true;
+        }
 
-            console.log(response);
+        return false;
+    };
+
+    const changeNotificationMessage = () => {
+        if (notification === 1)
+            setNotificationMsg(`Post '${post.title}' foi atualizado com sucesso.`);
+        else
+            setNotificationMsg('Um erro ocorreu. Tente novamente.');
+    };
+
+    const updateRequest = async () => {
+        if (postHasChanges() === true) {
+            try {
+                const response = await axios.put('http://localhost:8080/api/posts/update', post);
+
+                setNotification(1);
+            } catch (error) {
+                setNotification(2);
+            } finally {
+                changeNotificationMessage();
+            }
+        }
+    };
+
+    const deleteRequest = async () => {
+        try {
+            const response = await axios.delete(`http://localhost:8080/api/posts/delete/${post.username}/${post.post_id}`);
+
+            console.log('r', response);
+
+            if (response.status === 200)
+                setNotification(1);
         } catch (error) {
-            //
+            setNotification(2);
+        } finally {
+            changeNotificationMessage();
         }
     };
 
     const handleChoice = (event) => {
         setReady(true);
         setChosen(event.target.value);
-
-        if (chosen) {
-            const p = docs[chosen];
-
-            setPost({ ...p, });
-        }
     };
 
     useEffect(() => getAll(), []);
+    
+    useEffect(() => {
+        if (chosen) {
+            const p = docs[parseInt(chosen)];
+
+            setPost({ username: post.username, ...p, });
+            setCopy({ ...p, });
+
+            console.log(chosen, post);
+        }
+    }, [chosen]);
 
     return (
         <>
@@ -87,20 +143,27 @@ const UpdatePost = (props) => {
                 >
                     {
                         docs.map((post, index) => (
-                            <MenuItem value={index}>{post.title}</MenuItem>
+                            <MenuItem key={index} value={index}>{post.title}</MenuItem>
                         ))
                     }
                 </Select>
             </FormControl>
 
             {
-                ready === true ?
-                (
+                ready === true ? (
                     <>
                         <TextField
                             label="Title"
                             value={post.title}
                             onChange={(event) => setPost({ ...post, title: event.target.value, })}
+                            variant="outlined"
+                            className={classes.textSmall}
+                        />
+
+                        <TextField
+                            label="Author"
+                            value={post.author}
+                            onChange={(event) => setPost({ ...post, author: event.target.value, })}
                             variant="outlined"
                             className={classes.textSmall}
                         />
@@ -122,18 +185,35 @@ const UpdatePost = (props) => {
                             className={classes.textLarge}
                         />
 
-                        <Button
-                            variant="outlined"
-                            className={classes.submitButton}
-                            onClick={updateRequest}
-                        >
-                            Concluir
-                        </Button>
+                        <Stack spacing={2} direction="row">
+                            <Button
+                                variant="outlined"
+                                className={classes.submitButton}
+                                onClick={updateRequest}
+                            >
+                                Concluir
+                            </Button>
+
+                            <Button
+                                color="error"
+                                variant="outlined"
+                                className={classes.submitButton}
+                                onClick={deleteRequest}
+                            >
+                                Apagar Post
+                            </Button>
+                        </Stack>
+
                     </>
                 )
-                :
-                null
+                : null
             }
+
+            <Notification 
+                open={notification !== 0}
+                onClose={() => setNotification(0)}
+                message={notificationMsg}
+            />
 
         </>
     );
