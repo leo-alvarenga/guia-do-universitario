@@ -1,7 +1,7 @@
 import { useHistory } from 'react-router';
 
-import { Menu, MenuItem, IconButton, Avatar } from '@mui/material';
-import { AccountCircle, Edit as EditIcon } from '@mui/icons-material';
+import { Menu, MenuItem, ListItemIcon, ListItemText, IconButton, Avatar } from '@mui/material';
+import { AccountCircle, Edit as EditIcon, SwitchAccount } from '@mui/icons-material';
 
 const NavbarMenu = (props) => {
     const history = useHistory();
@@ -46,15 +46,26 @@ const NavbarMenu = (props) => {
                             props.user.role === 'admin'
                             ? (
                                 <MenuItem onClick={dashboardRedirect}>
-                                    <EditIcon />
-                                    Dashboard
+                                    <ListItemIcon>
+                                        <EditIcon />
+                                    </ListItemIcon>
+
+                                    <ListItemText>
+                                        Dashboard
+                                    </ListItemText>
                                 </MenuItem>
                             )
                             : null
                         }
 
                         <MenuItem onClick={props.onLogin}>
+                            <ListItemIcon>
+                                <SwitchAccount />
+                            </ListItemIcon>
+
+                            <ListItemText>
                             Switch Account
+                            </ListItemText>
                         </MenuItem>
                     </Menu>
                 </>

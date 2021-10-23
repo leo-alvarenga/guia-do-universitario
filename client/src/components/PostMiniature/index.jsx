@@ -58,7 +58,7 @@ const PostMiniature = (props) => {
     };
 
     useEffect(() => {
-        setMeta({ ...meta, ready: true, favorite: content.postId in favorites, });
+        setMeta({ ...meta, ready: true, favorite: favorites.find(f => f === content.postId) !== undefined, });
     }, []);
 
     return(

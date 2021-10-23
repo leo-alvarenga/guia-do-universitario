@@ -1,65 +1,23 @@
-import { Drawer, Box, List, Divider, ListItem } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+import { useHistory } from 'react-router';
+
+import { connect } from 'react-redux';
+
+import { Drawer, Box, MenuList, Divider, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 
 import { getSidebarItemsList } from './util';
 
-const useStyles = makeStyles((theme) => ({
-    sidebarItemsContainer: {
-        marginTop: '5rem',
-    },
-    
-    sidebarItem: {
-        marginTop: '1rem',
-    },
-
-    sidebarItemIcon: {
-        marginRight: '1rem',
-    },
-}));
-
-const getSidebarItems = (classes) => (
-    <Box
-        sx={{
-            width: 'auto'
-        }}
-        role='presentation'
-        className={classes.sidebarItemsContainer}
-    >
-        <List>
-            <Divider />
-
-            {
-                getSidebarItemsList().map((row, index) => (
-                    <div key={index}>
-                        {
-                            row.map((item, index) => (
-                                <ListItem className={classes.sidebarItem} key={index}>
-                                    <div className={classes.sidebarItemIcon}>
-                                    {item.icon}
-                                    </div>
-                                    <div>
-                                        {item.title}
-                                    </div>
-                                </ListItem>
-                            ))
-                        }
-
-                        <Divider />
-                    </div>
-                ))
-            }
-        </List>
-
-    </Box>
-);
 
 const Sidebar = (props) => {
-    const classes = useStyles();
-
+    const history = useHistory();
+    
     const handleClose = () => {
         if (props.onClose) {
             props.onClose();
         }
+    };
+
+    const redirect = (link) => {
+        history.push(link);
     };
 
     return (
@@ -67,11 +25,43 @@ const Sidebar = (props) => {
             open={props.active}
             onClose={handleClose}
         >
-            {
-                getSidebarItems(classes)
-            }
+            <Box
+                sx={{
+                    width: 'auto'
+                }}
+                role='presentation'
+            >
+                <MenuList>
+                    <Divider />
+        
+                    {
+                        getSidebarItemsList().map((item, index) => (
+                            <MenuItem 
+                                key={index} 
+                                sx={{
+                                    paddingTop: '1rem',
+                                    paddingBottom: '1rem',
+                                }}
+                                onClick={() => redirect(item.link)}
+                            >
+                                <ListItemIcon>
+                                    {item.icon}
+                                </ListItemIcon>
+                                <ListItemText>
+                                    {item.title}
+                                </ListItemText>
+                            </MenuItem>
+                        ))
+                    }
+                </MenuList>
+        
+            </Box>
         </Drawer>
     );
-}
+};
 
-export default Sidebar;
+const mapStateToProps = (state) => ({
+    user: state.user.value,
+});
+
+export default connect(mapStateToProps)(Sidebar);

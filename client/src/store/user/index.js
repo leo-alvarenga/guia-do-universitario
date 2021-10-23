@@ -61,8 +61,8 @@ export const user = createSlice({
             }
         },
         newFavorite: (state, action) => {
-            const n = state.value.favorites;
-            state.value.favorites = [ ...n, action.payload ];
+            const n = [ ...state.value.favorites, action.payload ];
+            state.value.favorites = [ ...n.filter((f) => f !== null) ];
 
             updateUser(state.value.username, state.value.favorites, state.value.role);
         },

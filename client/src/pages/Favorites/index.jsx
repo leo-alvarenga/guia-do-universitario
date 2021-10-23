@@ -1,3 +1,5 @@
+import { useHistory } from 'react-router';
+
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -7,7 +9,7 @@ import { setLoading } from '../../store/loading'
 
 // styles
 import { Paper } from '@mui/material';
-import localStyles from "./Home.style";
+import localStyles from "../Home/Home.style";
 
 // components
 import PostMiniature from '../../components/PostMiniature';
@@ -15,27 +17,42 @@ import PostMiniatureSkeleton from '../../components/PostMiniature/loading';
 import Erro from '../../components/Alerts/Erro';
 
 
-const Home = (props) => {
+const Favorites = (props) => {
     const localClasses = localStyles();
+    const history = useHistory();
 
     const [posts, setPosts] = useState([]);
     const [err, setErr] = useState(false);
 
     const dispatch = useDispatch();
 
+    const getOne = async (postId) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/posts/${postId}`);
+
+            return response.data?.id_search;
+        } catch (error) {
+            return undefined;
+        }
+    };
+
     const getPosts = async () => {
         dispatch(setLoading(true));
+        
+        const p = [];
+        let r;
 
-        try {
-            const response = await axios.get('http://localhost:8080/api/posts/'); // todo -> change this static route
+        for (let i = 0; i < props.user.favorites.length; i++) {
+            r = await getOne(props.user.favorites[i]);
 
-            setPosts(response.data?.posts);
-            setErr(false);
-        } catch (error) {
-            setErr(true);
-        } finally {
-            dispatch(setLoading(false));
+            if (r !== undefined) {
+                p.push(r);
+            }
         }
+
+        setPosts(p);
+
+        dispatch(setLoading(false));
     };
 
     const loadingSkeleton = () => (
@@ -44,12 +61,17 @@ const Home = (props) => {
         ))
     );
 
+    const redirect = () => {
+        history.push('/');
+    };
+
     const content = () => {
         if (err === true) {
             return (
                 <Erro
+                    severity="info"
                     body="Não foi possível carregar o conteúdo."
-                    onClick={getPosts}
+                    onClick={() => getPosts()}
                 />
             );
         } else {
@@ -73,30 +95,34 @@ const Home = (props) => {
                     <Erro
                         severity="info"
                         title="Tão vazio!"
-                        body="Não existem conteúdos a serem exibidos por aqui. Desculpe pelo transtorno!"
+                        body="Não existem posts favoritos! Tente favoritar alguns posts antes de voltar aqui novmente."
+                        label="Ver todos os posts"
+                        onClick={redirect}
                     />
                 );
             }
         }
     };
 
-    useEffect(() => {
+    useEffect(async () => {
         getPosts();
-
-        const f = posts.filter(
-            (post) => (
-                props.user.favorites.find(p => p === post.post_id) !== undefined
-            )
-        );
-
-        // filter here by tag
     }, []);
 
     return (
         <div className={localClasses.wrapper}>
             <Paper className={localClasses.miniContainer}>
                 <div>
-                    { props.loading === true ? loadingSkeleton() : content() }
+                    {
+                        props.user.isAuth === true
+                        ? props.loading === true ? loadingSkeleton() : content()
+                        : (
+                            <Erro
+                                body="Você precisa estar conectado com seu usuário para ver seus favoritos."
+                                label="Ver todos os posts"
+                                onClick={redirect}
+                            />
+                        )
+                    }
                 </div>                        
             </Paper>
         </div>
@@ -108,4 +134,4 @@ const mapStateToProps = (state) => ({
     user: state.user.value,
 });
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps)(Favorites);
