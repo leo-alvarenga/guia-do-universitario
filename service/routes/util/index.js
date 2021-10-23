@@ -11,10 +11,12 @@ const statusCode = {
 const DB_NAME = 'GuiaDoUniversitario';
 const USER_COLLECTION_NAME = 'users';
 const POST_COLLECTION_NAME = 'posts';
+const TAG_COLLECTION_NAME = 'tags';
 
 module.exports = {
     statusCode,
     DB_NAME,
     USER_COLLECTION_NAME,
-    POST_COLLECTION_NAME
+    POST_COLLECTION_NAME,
+    TAG_COLLECTION_NAME
 };

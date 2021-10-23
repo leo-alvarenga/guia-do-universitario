@@ -2,6 +2,10 @@ const { databaseClient } = require('../../../db/database');
 const { statusCode, DB_NAME, USER_COLLECTION_NAME } = require('../../util');
 
 const authUser = async (username) => {
+    if (!username) {
+        return statusCode.BAD_REQUEST;
+    }
+
     try {
         const result = await databaseClient.db(DB_NAME).collection(USER_COLLECTION_NAME).findOne({ username });
 

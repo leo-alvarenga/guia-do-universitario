@@ -46,16 +46,24 @@ postRouter.post('/new', async (req, res) => {
 
     if (body) {
         try {
-            const count = await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).countDocuments();
+            const { username, ...post } = body;
 
-            const new_post = {
-                post_id: count.toString(),
-                ...body,
-            };
+            const auth = authUser(username);
 
-            await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).insertOne(new_post);
+            if (auth === statusCode.OK) {
+                const count = await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).countDocuments();
 
-            res.status(statusCode.CREATED).send('Ok');
+                const new_post = {
+                    post_id: count.toString(),
+                    ...post,
+                };
+
+                await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).insertOne(new_post);
+
+                res.status(statusCode.CREATED).send('Ok');
+            } else {
+                res.status(auth).send(`Failed with code ${auth}.`);
+            }
         } catch (error) {
             res.status(statusCode.BAD_REQUEST).send('Post failed');
         }
