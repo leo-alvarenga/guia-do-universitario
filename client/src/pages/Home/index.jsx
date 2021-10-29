@@ -64,21 +64,25 @@ const Home = (props) => {
         const f = [];
 
         if (value >= 0) {
-            for (let i = 0; i < posts.length; ++i) {
+            for (let i = 0; i < posts?.length; ++i) {
                 if (posts[i]?.tags.includes(tags[value].name))
                     f.push(posts[i]);
             }
 
             setFiltered([ ...f ]);
         } else {
-            setFiltered([ ...posts ]);
+            if (posts?.lenght > 0) {
+                setFiltered([ ...posts ]);
+            } else {
+                setFiltered([]);
+            }
         }
         
         setChosen(value);
     };
 
     const loadingSkeleton = () => (
-        filtered.map((post, index) => (
+        filtered?.map((post, index) => (
             <PostMiniatureSkeleton key={index} />
         ))
     );
@@ -92,9 +96,9 @@ const Home = (props) => {
                 />
             );
         } else {
-            if (filtered.length > 0) {
+            if (filtered?.length > 0) {
                 return (
-                    filtered.map((post, index) => (
+                    filtered?.map((post, index) => (
                         <PostMiniature
                             key={index}
                             id={post.post_id}
@@ -140,7 +144,7 @@ const Home = (props) => {
                         >
                             <MenuItem key={-1} value={-1}>Nenhum</MenuItem>
                             {
-                                tags.map((tag, index) => (
+                                tags?.map((tag, index) => (
                                     <MenuItem key={index} value={index}>{tag.name}</MenuItem>
                                 ))
                             }

@@ -140,7 +140,7 @@ const PostMiniature = (props) => {
 
                 <Stack direction="row">
                     {
-                        content.tags.map(tag => (
+                        content.tags?.map(tag => (
                             <TagChip tag={tag} />
                         ))
                     }

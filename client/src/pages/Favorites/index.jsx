@@ -56,7 +56,7 @@ const Favorites = (props) => {
     };
 
     const loadingSkeleton = () => (
-        posts.map((post, index) => (
+        posts?.map((post, index) => (
             <PostMiniatureSkeleton key={index} />
         ))
     );
@@ -77,7 +77,7 @@ const Favorites = (props) => {
         } else {
             if (posts.length > 0) {
                 return (
-                    posts.map((post, index) => (
+                    posts?.map((post, index) => (
                         <PostMiniature
                             key={index}
                             id={post.post_id}

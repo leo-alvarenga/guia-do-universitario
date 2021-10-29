@@ -164,7 +164,7 @@ const CreatePost = (props) => {
 
             <FormGroup row>
                 {
-                    props.tags.map((tag, index) => (
+                    props.tags?.map((tag, index) => (
                         <FormControlLabel
                             key={index}
                             label={tag.name}
