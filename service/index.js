@@ -6,17 +6,21 @@ const swaggerDocument = require('./documentation/swagger.json');
 
 const path = require("path");
 
-app.use(express.static(path.join(__dirname, '/../client/build')));
-
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, '/../client/build/index.html'));
-});
-
 const { connectDataBase, databaseClient } = require('./db/database');
 
 const PORT = process.env.PORT || 8080;
 
 const app = express();
+
+// app.use(express.static(path.join(__dirname, '/../client/build')));
+
+// app.get("/", (req, res) => {
+//     res.sendFile(path.join(__dirname, '/../client/build/index.html'));
+// });
+
+app.get("/", (req, res) => {
+    res.status(200).send('Ok');
+});
 connectDataBase();
 
 app.use(cors());
