@@ -1,42 +1,16 @@
-import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
+import { FavoriteBorderOutlined as Favorites, DynamicFeedOutlined as Home } from '@mui/icons-material';
 
 const sidebarItems = [
-    [
-        {
-            title: 'Jeniffer Laila',
-            icon: <FavoriteOutlinedIcon />,
-        },
-        {
-            title: 'Leonardo A. Alvarenga',
-            icon: <FavoriteOutlinedIcon />,
-        },
-        {
-            title: 'Leonardo A. Alvarenga',
-            icon: <FavoriteOutlinedIcon />,
-        },
-        {
-            title: 'Jeniffer Laila',
-            icon: <FavoriteOutlinedIcon />
-        }
-    ],
-    [
-        {
-            title: '1',
-            icon: <FavoriteOutlinedIcon />,
-        },
-        {
-            title: '2',
-            icon: <FavoriteOutlinedIcon />,
-        },
-        {
-            title: '3',
-            icon: <FavoriteOutlinedIcon />,
-        },
-        {
-            title: '4',
-            icon: <FavoriteOutlinedIcon />
-        }
-    ],
+    {
+        title: 'Todos os posts',
+        icon: <Home />,
+        link: '/',
+    },
+    {
+        title: 'Favoritos',
+        icon: <Favorites />,
+        link: '/favorites',
+    },
 ];
 
 export const getSidebarItemsList = (userType) => {

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // mui
-import { FormControl, InputLabel, Select, MenuItem, TextField, Stack, Button } from '@mui/material';
+import { FormControl, FormGroup, FormControlLabel, Checkbox, InputLabel, Select, MenuItem, TextField, Stack, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 // components
@@ -13,8 +13,7 @@ import Notification from '../../../components/Alerts/Notification';
 
 const useStyles = makeStyles(() => ({
     textSmall: {
-        width: '40%',
-        margin: '1rem 0 1rem 0',
+        
     },
 
     textLarge: {
@@ -30,7 +29,7 @@ const useStyles = makeStyles(() => ({
 const UpdatePost = (props) => {
     const classes = useStyles();
     
-    const [chosen, setChosen] = useState(0);
+    const [chosen, setChosen] = useState(-1);
     const [ready, setReady] = useState(false);
 
     const [docs, setDocs] = useState([]);
@@ -41,6 +40,7 @@ const UpdatePost = (props) => {
         title: '',
         author: '',
         date: '',
+        tags: [],
         subtitle: '',
         body: '',
     });
@@ -50,12 +50,45 @@ const UpdatePost = (props) => {
         title: '',
         author: '',
         date: '',
+        tags: [],
         subtitle: '',
         body: '',
     });
 
     const [notification, setNotification] = useState(0);
     const [notificationMsg, setNotificationMsg] = useState('');
+
+    const [checked, setChecked] = useState([]);
+
+    const initChecked = () => {
+        const t = [];
+
+        for (let i = 0; i < props.tags.length; ++i) {
+            t.push(false);
+        }
+
+        return t;
+    };
+
+    const handleTagCheck = (event, index) => {
+        if (checked[index] === true) {                                                
+            const tags = [ ...post.tags ];
+            tags.splice(index, 1);
+            
+            const c = checked;
+            c[index] = false;
+            
+            setChecked([ ...c ]);
+        } else {
+            const tags = [ ...post.tags ];
+            tags.push(event.target.value);
+
+            const c = checked;
+            c[index] = true;
+            
+            setChecked([ ...c ]);
+        }
+    };
 
     const getAll = async () => {
         try {
@@ -104,8 +137,7 @@ const UpdatePost = (props) => {
 
             console.log('r', response);
 
-            if (response.status === 200)
-                setNotification(1);
+            setNotification(1);
         } catch (error) {
             setNotification(2);
         } finally {
@@ -121,13 +153,27 @@ const UpdatePost = (props) => {
     useEffect(() => getAll(), []);
     
     useEffect(() => {
-        if (chosen) {
+        const tags = [];
+        
+        for (let i = 0; i < checked.length; ++i) {
+            if (checked[i] === true) {
+                tags.push(props.tags[i].name);
+            }
+        }
+
+        setPost({ ...post, tags: [ ...tags ], });
+    }, [JSON.stringify(checked)]);
+
+    useEffect(() => {
+        if (chosen >= 0) {
             const p = docs[parseInt(chosen)];
 
             setPost({ username: post.username, ...p, });
             setCopy({ ...p, });
 
             console.log(chosen, post);
+        } else {
+            setReady(false);
         }
     }, [chosen]);
 
@@ -141,6 +187,7 @@ const UpdatePost = (props) => {
                     onChange={handleChoice}
                     label="Post para editar"
                 >
+                    <MenuItem key={-1} value={-1}>Selecione um post...</MenuItem>
                     {
                         docs.map((post, index) => (
                             <MenuItem key={index} value={index}>{post.title}</MenuItem>
@@ -157,15 +204,21 @@ const UpdatePost = (props) => {
                             value={post.title}
                             onChange={(event) => setPost({ ...post, title: event.target.value, })}
                             variant="outlined"
-                            className={classes.textSmall}
+                            sx={{
+                                width: '40%',
+                                margin: '1rem 0 1rem 0'
+                            }}
                         />
-
+                        
                         <TextField
                             label="Author"
                             value={post.author}
                             onChange={(event) => setPost({ ...post, author: event.target.value, })}
                             variant="outlined"
-                            className={classes.textSmall}
+                            sx={{
+                                width: '40%',
+                                margin: '1rem 0 1rem 0'
+                            }}
                         />
 
                         <TextField
@@ -173,7 +226,10 @@ const UpdatePost = (props) => {
                             value={post.subtitle}
                             onChange={(event) => setPost({ ...post, subtitle: event.target.value, })}
                             variant="outlined"
-                            className={classes.textSmall}
+                            sx={{
+                                width: '40%',
+                                margin: '1rem 0 1rem 0'
+                            }}
                         />
 
                         <TextField
@@ -182,8 +238,29 @@ const UpdatePost = (props) => {
                             onChange={(event) => setPost({ ...post, body: event.target.value, })}
                             multiline
                             rows={4}
-                            className={classes.textLarge}
+                            sx={{
+                                width: '80%',
+                                margin: '1rem 0 1rem 0',
+                            }}
                         />
+
+                        <FormGroup row>
+                            {
+                                props.tags.map((tag, index) => (
+                                    <FormControlLabel
+                                        key={index}
+                                        label={tag.name}
+                                        control={
+                                            <Checkbox
+                                                value={tag.name}
+                                                checked={checked[index] === undefined ? false : checked[index]}
+                                                onChange={(event) => handleTagCheck(event, index)}
+                                            />
+                                        }
+                                    />
+                                ))
+                            }
+                        </FormGroup>
 
                         <Stack spacing={2} direction="row">
                             <Button

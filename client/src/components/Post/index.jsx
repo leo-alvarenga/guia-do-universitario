@@ -18,13 +18,6 @@ import Erro from '../Alerts/Erro';
 const Post = (props) => {
     const localClasses = localStyles();
 
-    /** Post data
-     * Properties:
-     * - title
-     * - subtitle
-     * - body
-     * - img
-     */
     const [data, setData] = useState({
         postId: props.postId,
         img: '',
@@ -34,6 +27,7 @@ const Post = (props) => {
         subtitle: '',
         body: '',
     });
+
     const [err, setErr] = useState(0);
 
     const dispatch = useDispatch();
@@ -114,13 +108,21 @@ const Post = (props) => {
                     {
                         data.subtitle &&
                         (
-                            <Typography variant="h5" color="text.disabled" className={localClasses.sub}>
+                            <Typography
+                                variant="h5"
+                                color="text.disabled"
+                                sx={{ margin: '2rem 0 4rem 0' }}
+                            >
                                 {data.subtitle}
                             </Typography>
                         )
                     }
 
-                    <Typography variant="p" color="text.primary" className={localClasses.body}>
+                    <Typography
+                        variant="p"
+                        color="text.primary"
+                        sx={{ margin: '4rem 0rem 0rem 0' }}
+                    >
                         {data.body}
                     </Typography>
                 </>

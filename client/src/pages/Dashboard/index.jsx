@@ -1,5 +1,8 @@
 // react
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+// axios
+import axios from 'axios';
 
 // router
 import { useHistory } from 'react-router';
@@ -19,16 +22,24 @@ const Dashboard = (props) => {
     const history = useHistory();
 
     const [currentView, setView] = useState(0);
+    const [tags, setTags] = useState([]);
 
-    const renderView = () => (
-        currentView === 0
-        ? <CreatePost username={props.user.username} />
-        : <UpdatePost username={props.user.username} />
-    );
+    const getTags = async () => {try {
+            const response = await axios.get('http://localhost:8080/api/tags/'); // todo -> change this static route
+
+            setTags([ ...response.data?.tags ]);
+        } catch (error) {
+            //
+        }
+    };
 
     const redirect = () => {
         history.push('/');
     };
+
+    useEffect(() => {
+        getTags();
+    }, []);
 
     return(
         <Paper>
@@ -51,7 +62,11 @@ const Dashboard = (props) => {
                                 padding: '1rem',
                             }}
                         >
-                            { renderView() }
+                            {
+                                currentView === 0
+                                ? <CreatePost username={props.user.username} tags={tags} />
+                                : <UpdatePost username={props.user.username} tags={tags} />
+                            }
                         </Box>
                     </>
                 )

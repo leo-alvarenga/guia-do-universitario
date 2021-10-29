@@ -2,7 +2,7 @@ import { Alert, AlertTitle, Typography, Button } from '@mui/material';
 
 const Erro = (props) => (
     <Alert severity={props.severity || 'error'}>
-        <AlertTitle>Erro</AlertTitle>
+        <AlertTitle>{props.title || 'Erro'}</AlertTitle>
         
         <Typography>
             { 

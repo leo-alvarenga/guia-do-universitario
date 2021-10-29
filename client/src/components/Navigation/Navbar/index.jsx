@@ -34,7 +34,6 @@ const Navbar = (props) => {
     const handleSidebar = () => {
         if (props.onOpen) {
             props.onOpen();
-            handleClose();
         }
     };
 
