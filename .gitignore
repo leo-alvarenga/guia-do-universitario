@@ -2,7 +2,7 @@
 service/node_modules
 service/yarn.lock
 
-# dependencies
+# client
 client/
 
 yarn.lock
