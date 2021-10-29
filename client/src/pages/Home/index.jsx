@@ -6,7 +6,7 @@ import { connect, useDispatch } from 'react-redux';
 import { setLoading } from '../../store/loading'
 
 // styles
-import { Paper } from '@mui/material';
+import { Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import localStyles from "./Home.style";
 
 // components
@@ -23,6 +23,25 @@ const Home = (props) => {
 
     const dispatch = useDispatch();
 
+    const [filtered, setFiltered] = useState([]);
+
+    const [tags, setTags] = useState([]);
+    const [chosen, setChosen] = useState(-1);
+
+    const getTags = async () => {
+        dispatch(setLoading(true));
+
+        try {
+            const response = await axios.get('http://localhost:8080/api/tags/'); // todo -> change this static route
+
+            setTags(response.data?.tags);
+        } catch (error) {
+            //
+        } finally {
+            dispatch(setLoading(false));
+        }
+    };
+
     const getPosts = async () => {
         dispatch(setLoading(true));
 
@@ -30,6 +49,7 @@ const Home = (props) => {
             const response = await axios.get('http://localhost:8080/api/posts/'); // todo -> change this static route
 
             setPosts(response.data?.posts);
+            setFiltered(response.data?.posts);
             setErr(false);
         } catch (error) {
             setErr(true);
@@ -38,8 +58,27 @@ const Home = (props) => {
         }
     };
 
+    const handleFilterSelection = (event) => {
+        const value = event.target.value;
+
+        const f = [];
+
+        if (value >= 0) {
+            for (let i = 0; i < posts.length; ++i) {
+                if (posts[i]?.tags.includes(tags[value].name))
+                    f.push(posts[i]);
+            }
+
+            setFiltered([ ...f ]);
+        } else {
+            setFiltered([ ...posts ]);
+        }
+        
+        setChosen(value);
+    };
+
     const loadingSkeleton = () => (
-        posts.map((post, index) => (
+        filtered.map((post, index) => (
             <PostMiniatureSkeleton key={index} />
         ))
     );
@@ -53,9 +92,9 @@ const Home = (props) => {
                 />
             );
         } else {
-            if (posts.length > 0) {
+            if (filtered.length > 0) {
                 return (
-                    posts.map((post, index) => (
+                    filtered.map((post, index) => (
                         <PostMiniature
                             key={index}
                             id={post.post_id}
@@ -64,6 +103,7 @@ const Home = (props) => {
                             date={post.date}
                             subtitle={post.subtitle}
                             body={post.body}
+                            tags={post.tags}
                             darkMode={props.darkMode}
                         />
                     ))
@@ -81,13 +121,8 @@ const Home = (props) => {
     };
 
     useEffect(() => {
+        getTags();
         getPosts();
-
-        const f = posts.filter(
-            (post) => (
-                props.user.favorites.find(p => p === post.post_id) !== undefined
-            )
-        );
 
         // filter here by tag
     }, []);
@@ -96,6 +131,22 @@ const Home = (props) => {
         <div className={localClasses.wrapper}>
             <Paper className={localClasses.miniContainer}>
                 <div>
+                    <FormControl sx={{ marginBottom: '1rem', justifySelf: 'center' }}>
+                        <InputLabel>Tags</InputLabel>
+                        <Select
+                            value={chosen}
+                            onChange={handleFilterSelection}
+                            label="Filtro selecionado"
+                        >
+                            <MenuItem key={-1} value={-1}>Nenhum</MenuItem>
+                            {
+                                tags.map((tag, index) => (
+                                    <MenuItem key={index} value={index}>{tag.name}</MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
+
                     { props.loading === true ? loadingSkeleton() : content() }
                 </div>                        
             </Paper>

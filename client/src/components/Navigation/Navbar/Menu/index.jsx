@@ -7,7 +7,7 @@ const NavbarMenu = (props) => {
     const history = useHistory();
 
     const dashboardRedirect = () => {
-        history.push('/');
+        history.push('/dashboard');
     };
 
     const content = () => {
