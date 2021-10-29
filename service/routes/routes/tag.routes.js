@@ -1,6 +1,7 @@
 const tagRouter = require('express').Router();
 
 const { databaseClient } = require('../../db/database');
+const authUser = require('./auth');
 const { statusCode, DB_NAME, TAG_COLLECTION_NAME } = require('../util');
 
 const isTagAvailable = async (tag) => {
@@ -39,7 +40,7 @@ tagRouter.post('/new', async (req, res) => {
         try {
             const { username, ...tag } = body;
 
-            const auth = authUser(username);
+            const auth = await authUser(username);
 
             if (auth === statusCode.OK) {
                 const count = await databaseClient.db(DB_NAME).collection(TAG_COLLECTION_NAME).countDocuments();

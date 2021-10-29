@@ -2,8 +2,11 @@ const postRouter = require('express').Router();
 const ObjectId = require('mongodb').ObjectId;
 
 const { databaseClient } = require('../../db/database');
-const { statusCode, DB_NAME, POST_COLLECTION_NAME } = require('../util');
 const authUser = require('./auth');
+const excludePostFromFavorites = require('./posts');
+
+const { statusCode, DB_NAME, POST_COLLECTION_NAME, getTodaysDateAsString } = require('../util');
+const { isTagAvailable } = require('./tag.routes');
 
 // get all posts
 postRouter.get('/', async (req, res) => {
@@ -48,10 +51,33 @@ postRouter.post('/new', async (req, res) => {
         try {
             const { username, ...post } = body;
 
-            const auth = authUser(username);
+            const auth = await authUser(username);
 
             if (auth === statusCode.OK) {
                 const count = await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).countDocuments();
+
+                const tags = post?.tags;
+                const date = post?.date;
+
+                if (tags !== undefined) {
+                    let res;
+                    const verifiedTags = [];
+                    for (let i = 0; i < tags.length; ++i) {
+                        res = await isTagAvailable(tags[i]);
+
+                        if (res === true) {
+                            verifiedTags.push(tags[i]);
+                        }
+                    }
+
+                    post.tags = [ ...verifiedTags ];
+                } else {
+                    post.tags = [];
+                }
+
+                if (!date) {
+                    post.date = getTodaysDateAsString();
+                }
 
                 const new_post = {
                     post_id: count.toString(),
@@ -75,18 +101,34 @@ postRouter.post('/new', async (req, res) => {
 postRouter.put(('/update'), async (req, res) => {
     if (req.body) {
         const body = req.body;
-        
-        try {
-            const query = { 'post_id': `${body.post_id}`  };
-            const { _id, username, ...post } = body;
 
-            const auth = authUser(username);
+        try {
+            const query = { post_id: body.post_id  };
+            const { username, _id, ...post } = body;
+
+            const auth = await authUser(username);
 
             if (auth === statusCode.OK) {
+                const tags = post?.tags;
+
+                if (tags !== undefined) {
+                    let res;
+                    const verifiedTags = [];
+                    for (let i = 0; i < tags.length; ++i) {
+                        res = await isTagAvailable(tags[i]);
+
+                        if (res === true) {
+                            verifiedTags.push(tags[i]);
+                        }
+                    }
+
+                    post.tags = [ ...verifiedTags ];
+                }
+
                 const postQuery = { $set: { ...post } };
     
                 await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).updateOne(query, postQuery);
-                
+
                 res.status(statusCode.OK).send('Ok');
             } else {
                 res.status(auth).send(`Failed with code ${auth}.`);
@@ -108,11 +150,12 @@ postRouter.delete("/delete/:username/:post_id", async (req, res) => {
         if (auth === statusCode.OK) {
             const findQuery = { post_id: `${post_id}` };
 
-            const r = await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).findOne({ post_id });
+            const r = await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).findOne(findQuery);
 
             if (r !== null) {
                 const deleteQuery = { _id: ObjectId(r._id) };
 
+                await excludePostFromFavorites(post_id);
                 const a = await databaseClient.db(DB_NAME).collection(POST_COLLECTION_NAME).deleteOne(deleteQuery);
 
                 if (a?.deletedCount > 0)
