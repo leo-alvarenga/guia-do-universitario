@@ -28,7 +28,7 @@ const Favorites = (props) => {
 
     const getOne = async (postId) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/posts/${postId}`);
+            const response = await axios.get(`/api/posts/${postId}`);
 
             return response.data?.id_search;
         } catch (error) {
