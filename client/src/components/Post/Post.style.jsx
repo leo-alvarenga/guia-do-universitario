@@ -8,11 +8,6 @@ const localStyles = makeStyles(() => ({
     title: {
         textAlign: 'center',
     },
-    cover: {
-    },
-    body: {
-        margin: '5rem 0 0 0',
-    },
 }));
 
 export default localStyles;

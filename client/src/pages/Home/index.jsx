@@ -2,26 +2,45 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 
-import { useSelector, useDispatch } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { setLoading } from '../../store/loading'
 
 // styles
-import { Paper, Alert, AlertTitle, Typography, Button } from '@mui/material';
+import { Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import localStyles from "./Home.style";
 
 // components
 import PostMiniature from '../../components/PostMiniature';
 import PostMiniatureSkeleton from '../../components/PostMiniature/loading';
+import Erro from '../../components/Alerts/Erro';
 
 
 const Home = (props) => {
     const localClasses = localStyles();
-    const loading = useSelector((state) => state.loading);
 
     const [posts, setPosts] = useState([]);
     const [err, setErr] = useState(false);
 
     const dispatch = useDispatch();
+
+    const [filtered, setFiltered] = useState([]);
+
+    const [tags, setTags] = useState([]);
+    const [chosen, setChosen] = useState(-1);
+
+    const getTags = async () => {
+        dispatch(setLoading(true));
+
+        try {
+            const response = await axios.get('http://localhost:8080/api/tags/'); // todo -> change this static route
+
+            setTags(response.data?.tags);
+        } catch (error) {
+            //
+        } finally {
+            dispatch(setLoading(false));
+        }
+    };
 
     const getPosts = async () => {
         dispatch(setLoading(true));
@@ -30,64 +49,114 @@ const Home = (props) => {
             const response = await axios.get('http://localhost:8080/api/posts/'); // todo -> change this static route
 
             setPosts(response.data?.posts);
+            setFiltered(response.data?.posts);
             setErr(false);
         } catch (error) {
-            console.log(error);
             setErr(true);
         } finally {
             dispatch(setLoading(false));
         }
     };
 
-    useEffect(() => getPosts(), []);
+    const handleFilterSelection = (event) => {
+        const value = event.target.value;
+
+        const f = [];
+
+        if (value >= 0) {
+            for (let i = 0; i < posts.length; ++i) {
+                if (posts[i]?.tags.includes(tags[value].name))
+                    f.push(posts[i]);
+            }
+
+            setFiltered([ ...f ]);
+        } else {
+            setFiltered([ ...posts ]);
+        }
+        
+        setChosen(value);
+    };
 
     const loadingSkeleton = () => (
-        posts.map((post) => (
-            <PostMiniatureSkeleton />
+        filtered.map((post, index) => (
+            <PostMiniatureSkeleton key={index} />
         ))
     );
 
     const content = () => {
         if (err === true) {
             return (
-                <Alert severity="error">
-                    <AlertTitle>Erro</AlertTitle>
-                    
-                    <Typography>
-                        Não foi possível carregar o conteúdo.
-                    </Typography>
-
-                    <Button onClick={getPosts}>Tentar novamente</Button>
-                </Alert>
+                <Erro
+                    body="Não foi possível carregar o conteúdo."
+                    onClick={getPosts}
+                />
             );
         } else {
-            if (posts.length > 0) {
+            if (filtered.length > 0) {
                 return (
-                    posts.map((post, index) => (
-                        <PostMiniature id={post.post_id} title={post.title} body={post.body} darkMode={props.darkMode} />
+                    filtered.map((post, index) => (
+                        <PostMiniature
+                            key={index}
+                            id={post.post_id}
+                            title={post.title}
+                            author={post.author}
+                            date={post.date}
+                            subtitle={post.subtitle}
+                            body={post.body}
+                            tags={post.tags}
+                            darkMode={props.darkMode}
+                        />
                     ))
                 );
             } else {
                 return (
-                    <Alert severity="info">
-                        <AlertTitle>Tão vazio!</AlertTitle>
-                        Não existem conteúdos a serem exibidos por aqui. Desculpe pelo transtorno!
-                    </Alert>
+                    <Erro
+                        severity="info"
+                        title="Tão vazio!"
+                        body="Não existem conteúdos a serem exibidos por aqui. Desculpe pelo transtorno!"
+                    />
                 );
             }
         }
     };
 
+    useEffect(() => {
+        getTags();
+        getPosts();
+
+        // filter here by tag
+    }, []);
+
     return (
         <div className={localClasses.wrapper}>
             <Paper className={localClasses.miniContainer}>
                 <div>
-            
-                    { loading === true ? loadingSkeleton() : content() }
+                    <FormControl sx={{ marginBottom: '1rem', justifySelf: 'center' }}>
+                        <InputLabel>Tags</InputLabel>
+                        <Select
+                            value={chosen}
+                            onChange={handleFilterSelection}
+                            label="Filtro selecionado"
+                        >
+                            <MenuItem key={-1} value={-1}>Nenhum</MenuItem>
+                            {
+                                tags.map((tag, index) => (
+                                    <MenuItem key={index} value={index}>{tag.name}</MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
+
+                    { props.loading === true ? loadingSkeleton() : content() }
                 </div>                        
             </Paper>
         </div>
     );
 };
 
-export default Home;
+const mapStateToProps = (state) => ({
+    loading: state.loading.value,
+    user: state.user.value,
+});
+
+export default connect(mapStateToProps)(Home);

@@ -9,7 +9,7 @@ export const loading = createSlice({
 
     reducers: {
         setLoading: (state, action) => {
-            state = action.payload;
+            return { value: action.payload };
         },
     },
 

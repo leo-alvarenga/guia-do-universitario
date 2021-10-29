@@ -9,10 +9,17 @@ const Page = (props) => {
 
     return (
         <Paper className={localClasses.wrapper} elevation={0}>
-            <Navigation onThemeChange={props.onThemeChange} darkMode={props.darkMode} />
+            <Navigation 
+                onThemeChange={props.onThemeChange} 
+                darkMode={props.darkMode}
+            />
 
             <Paper className={localClasses.page} elevation={0}>    
-                {props.children ? props.children : null}
+                {
+                    props.children
+                    ? props.children
+                    : null
+                }
             </Paper>
         </Paper>
     );
