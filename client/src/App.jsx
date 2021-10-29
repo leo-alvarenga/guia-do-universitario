@@ -17,6 +17,7 @@ import Page from './components/Page/Page';
 
 // Pages
 import Home from './pages/Home';
+import Favorites from './pages/Favorites';
 import Read from './pages/Read';
 import Dashboard from './pages/Dashboard';
 
@@ -34,13 +35,17 @@ const App = (props) => {
         
             <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet'></link>
 
-            <Page onThemeChange={handleThemeChange} darkMode={darkMode}>
-
-                <BrowserRouter>
+            <BrowserRouter>
+                <Page onThemeChange={handleThemeChange} darkMode={darkMode}>
                     <Route 
                         path='/'
                         exact
                         render={(props) => (<Home darkMode={darkMode} />)}
+                    />
+                    <Route 
+                        path='/favorites'
+                        exact
+                        render={(props) => (<Favorites darkMode={darkMode} />)}
                     />
                     <Route
                         path='/read/:post_id'
@@ -52,8 +57,8 @@ const App = (props) => {
                         exact
                         component={Dashboard}
                     />
-                </BrowserRouter>
-            </Page>
+                </Page>
+            </BrowserRouter>
 
 
         </ThemeProvider>
@@ -64,6 +69,8 @@ const mapStateToProps = (state) => {
     return {
         darkMode: state.theme === 'dark',
         theme: state.theme,
+        loading: state.loading,
+        user: state.user,
     };
 };
 

@@ -1,34 +1,34 @@
-import { useRef, useState } from 'react';
-import { useDispatch, useSelector, connect } from 'react-redux';
+// react
+import { useState } from 'react';
 
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-
-import { ThemeSwitch } from './util';
-import { getThemeFromLocalData, theme } from '../../../store/theme';
+// redux
+import { connect } from 'react-redux';
 import { setTheme } from '../../../store/theme';
+
+// mui
+import { AppBar, Box, Toolbar, Typography, IconButton } from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
+
+// components
+import LoginDialog from './LoginDialog';
+import NavbarMenu from './Menu';
+import ThemeSwitch from './ThemeSwitch';
 
 const Navbar = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [localTheme, setLocalTheme] = useState(props.darkMode);
+    const [login, setLogin] = useState(false);
 
-    console.log(localTheme);
-
-    const auth = useSelector(state => state.isAuth);
-
-    const handleMenu = (event) => {
+    const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = () => {
+    const handleMenuClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleLoginOption = () => {
+        setLogin(true);
     };
 
     const handleSidebar = () => {
@@ -68,47 +68,31 @@ const Navbar = (props) => {
                     />
                     
                     <div>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleMenu}
-                            color="inherit"
-                        >
-                            <AccountCircle />
-                        </IconButton>
                         
-                        <Menu
-                            id="menu-appbar"
+                        <NavbarMenu
                             anchorEl={anchorEl}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorEl)}
-                            onClose={handleClose}
-                        >
-                            <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleClose}>My account</MenuItem>
-                        </Menu>
+                            onOpen={handleMenuOpen}
+                            onClose={handleMenuClose}
+                            onLogin={handleLoginOption}
+                            user={props.user}
+                        />
+                        
+                        <LoginDialog 
+                            open={login} 
+                            onClose={() => setLogin(false)}
+                        />
                     </div>
                 </Toolbar>
             </AppBar>
+
         </Box>
     );
 }
 
-const mapStateToProps = (state) => {
-    return {
-        theme: state.theme.value,
-    };
-}
+const mapStateToProps = (state) => ({
+    theme: state.theme.value,
+    user: state.user.value,
+});
 
 const mapDispatchToProps = (dispatch) => {
     return {
