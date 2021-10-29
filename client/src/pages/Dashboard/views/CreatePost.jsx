@@ -58,7 +58,7 @@ const CreatePost = (props) => {
     const postRequest = async () => {
         if (postIsValid() === true) {
             try {
-                const response = await axios.post('http://localhost:8080/api/posts/new', post);
+                const response = await axios.post('/api/posts/new', post);
     
                 changeNotificationMessage(2);
             } catch (error) {

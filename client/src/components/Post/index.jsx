@@ -52,7 +52,7 @@ const Post = (props) => {
         dispatch(setLoading(true));
 
         try {
-            const response = await axios.get(`http://localhost:8080/api/posts/${props.postId}`);
+            const response = await axios.get(`/api/posts/${props.postId}`);
 
             if (response.status === 200) {
                 setData(response?.data?.id_search);

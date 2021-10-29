@@ -26,7 +26,7 @@ const LoginDialog = (props) => {
     const authUser = async (username, newUser) => {
         try {
             if (username) {
-                const response = await axios.get(`http://localhost:8080/api/user/${username}`);
+                const response = await axios.get(`/api/user/${username}`);
 
                 console.log(response);
                 if (response.status === 200) {
@@ -42,7 +42,7 @@ const LoginDialog = (props) => {
                 if (newUser === true) {
                     const user = { username, favorites: [], role: 'user', }
     
-                    const r = await axios.post(`http://localhost:8080/api/user/new`, user);
+                    const r = await axios.post(`/api/user/new`, user);
     
                     return user;
                 }
