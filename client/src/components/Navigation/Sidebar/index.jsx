@@ -35,7 +35,7 @@ const Sidebar = (props) => {
                     <Divider />
         
                     {
-                        getSidebarItemsList().map((item, index) => (
+                        getSidebarItemsList()?.map((item, index) => (
                             <MenuItem 
                                 key={index} 
                                 sx={{

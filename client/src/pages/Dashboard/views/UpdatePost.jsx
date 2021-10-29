@@ -189,7 +189,7 @@ const UpdatePost = (props) => {
                 >
                     <MenuItem key={-1} value={-1}>Selecione um post...</MenuItem>
                     {
-                        docs.map((post, index) => (
+                        docs?.map((post, index) => (
                             <MenuItem key={index} value={index}>{post.title}</MenuItem>
                         ))
                     }
@@ -246,7 +246,7 @@ const UpdatePost = (props) => {
 
                         <FormGroup row>
                             {
-                                props.tags.map((tag, index) => (
+                                props.tags?.map((tag, index) => (
                                     <FormControlLabel
                                         key={index}
                                         label={tag.name}
