@@ -9,6 +9,78 @@
     "host": "localhost:8080",
     "basePath": "/api/",
     "paths": {
+        "/tags/": {
+          "get": {
+            "summary": "Lista todas as tags existentes para posts.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["Tags"],
+            "responses": {
+              "200": {
+                "description": "A requisição foi bem sucedida e as tags foram enviadas."
+              },
+              "404": {
+                "description": "Não existem tags a serem recuperadas."
+              },
+              "400": {
+                "description": "Ocorreu algum tipo de erro ao recuperar os documentos."
+              }
+            }
+          }
+        },
+
+        "/tags/new": {
+          "post": {
+            "summary": "Cria uma nova tag a partir do objeto enviado no body do request.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["Tags"],
+            "responses": {
+              "201": {
+                "description":"A requisição foi bem sucedida e uma nova tag foi criado."
+              },
+              "400": {
+                "description": "Ocorreu algum tipo de erro ao tentar criar um novo documento."
+              },
+              "401": {
+                "description":"O request não pôde ser completado porque o usuário existe mas não possui autorização para continuar."
+              },
+              "403": {
+                "description": "O request não pode ser completado porque o body não foi preenchido ou foi preenchido incorretamente."
+              },
+              "404": {
+                "description":"O request não pôde ser completado porque o usuário não existe."
+              },
+              "406": {
+                "description": "O request não pôde ser completado porque houve alguma inconsistência no body ou porque a operação no banco falhou."
+              }
+            },
+            "parameters":[ {
+              "name": "Tag",
+              "description": "Objeto post a ser inserido no banco contendo o username do usuário que fez o pedido.",
+              "schema": {
+                "description": "Objeto post a ser inserido no banco contendo o username do usuário que fez o pedido.",
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "username": "user01",
+                  "name": "Nova tag"
+                }
+              },
+              "in": "body"
+            } ]
+          }
+        },
+
         "/posts/": {
           "get": {
             "summary": "Lista todos os posts.",
@@ -110,6 +182,12 @@
                   },
                   "body": {
                     "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
                   }
                 },
                 "example": {
@@ -118,7 +196,8 @@
                   "author": "Autor teste",
                   "date": "18/10/2021",
                   "subtitle": "Com uma legenda legal",
-                  "body": "Lorem ipsum aqui, como corpo do post."
+                  "body": "Lorem ipsum aqui, como corpo do post.",
+                  "tags": ["VARIEDADES", "UTEIS"]
                 }
               },
               "in": "body"
@@ -177,6 +256,12 @@
                 },
                 "body": {
                   "type": "string"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 }
               },
               "example": {
@@ -186,7 +271,8 @@
                 "author": "Auto atualizado",
                 "date": "18/10/2021",
                 "subtitle": "Legenda atualizada",
-                "body": "Corpo atualizado. Lembrando que o post_id não deve ser alterado, ou o update não será efetuado."
+                "body": "Corpo atualizado. Lembrando que o post_id não deve ser alterado, ou o update não será efetuado.",
+                "tags": ["VARIEDADES", "UTEIS"]
               }
             },
             "in": "body"
