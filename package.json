@@ -6,7 +6,7 @@
   "license": "MIT",
   "dependencies": {},
   "engines": {
-    "node": "v14.8.1"
+    "node": "14.x"
   },
   "scripts": {
     "start": "cd service/ && npm install && node index.js"
