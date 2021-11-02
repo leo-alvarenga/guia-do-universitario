@@ -1,0 +1,450 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Guia Do Universitário",
+        "description": "API da aplicação Guia do Universitário",
+        "version": "0.1.0"
+    },
+
+    "host": "localhost:8080",
+    "basePath": "/api/",
+    "paths": {
+        "/tags/": {
+          "get": {
+            "summary": "Lista todas as tags existentes para posts.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["Tags"],
+            "responses": {
+              "200": {
+                "description": "A requisição foi bem sucedida e as tags foram enviadas."
+              },
+              "404": {
+                "description": "Não existem tags a serem recuperadas."
+              },
+              "400": {
+                "description": "Ocorreu algum tipo de erro ao recuperar os documentos."
+              }
+            }
+          }
+        },
+
+        "/tags/new": {
+          "post": {
+            "summary": "Cria uma nova tag a partir do objeto enviado no body do request.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["Tags"],
+            "responses": {
+              "201": {
+                "description":"A requisição foi bem sucedida e uma nova tag foi criado."
+              },
+              "400": {
+                "description": "Ocorreu algum tipo de erro ao tentar criar um novo documento."
+              },
+              "401": {
+                "description":"O request não pôde ser completado porque o usuário existe mas não possui autorização para continuar."
+              },
+              "403": {
+                "description": "O request não pode ser completado porque o body não foi preenchido ou foi preenchido incorretamente."
+              },
+              "404": {
+                "description":"O request não pôde ser completado porque o usuário não existe."
+              },
+              "406": {
+                "description": "O request não pôde ser completado porque houve alguma inconsistência no body ou porque a operação no banco falhou."
+              }
+            },
+            "parameters":[ {
+              "name": "Tag",
+              "description": "Objeto post a ser inserido no banco contendo o username do usuário que fez o pedido.",
+              "schema": {
+                "description": "Objeto post a ser inserido no banco contendo o username do usuário que fez o pedido.",
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "username": "user01",
+                  "name": "Nova tag"
+                }
+              },
+              "in": "body"
+            } ]
+          }
+        },
+
+        "/posts/": {
+          "get": {
+            "summary": "Lista todos os posts.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["Posts"],
+            "responses": {
+              "200": {
+                "description": "A requisição foi bem sucedida e os posts foram enviados."
+              },
+              "404": {
+                "description": "Não existem posts a serem recuperados."
+              },
+              "400": {
+                "description": "Ocorreu algum tipo de erro ao recuperar os documentos."
+              }
+            }
+          }
+        },
+
+        "/posts/{search_term}": {
+          "get": {
+            "summary": "Busca por um post a partir de um título ou post_id.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["Posts"],
+            "responses": {
+              "200": {
+                "description":"A requisição foi bem sucedida e um post cujo post_id ou título é igual ao search_term foi reuperado do banco."
+              },
+              "404":{
+                "description": "Não existem posts a serem recuperados."
+              },
+              "400":{
+                "description":"Ocorreu algum tipo de erro ao recuperar o documento."
+              }
+            },
+            "parameters" : [ {
+              "name" : "search_term",
+              "description" : "Termo de busca usado para pesquisa do post. Deve ser um título ou post_id.",
+              "schema" : {
+                "description" : "search_term",
+                "type" : "string"
+              },
+              "in": "path"
+            } ]
+          }
+        },
+        "/posts/new": {
+          "post": {
+            "summary": "Cria um novo post a partir do objeto enviado no body do request.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["Posts"],
+            "responses": {
+              "201": {
+                "description":"A requisição foi bem sucedida e um novo post foi criado."
+              },
+              "400": {
+                "description": "Ocorreu algum tipo de erro ao tentar criar um novo documento."
+              },
+              "401": {
+                "description":"O request não pôde ser completado porque o usuário existe mas não possui autorização para continuar."
+              },
+              "403": {
+                "description": "O request não pode ser completado porque o body não foi preenchido ou foi preenchido incorretamente."
+              },
+              "404": {
+                "description":"O request não pôde ser completado porque o usuário não existe."
+              },
+              "406": {
+                "description": "O request não pôde ser completado porque houve alguma inconsistência no body ou porque a operação no banco falhou."
+              }
+            },
+            "parameters":[ {
+              "name": "Post",
+              "description": "Objeto post a ser inserido no banco contendo o username do usuário que fez o pedido.",
+              "schema": {
+                "description": "Objeto post a ser inserido no banco contendo o username do usuário que fez o pedido.",
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "author": {
+                    "type": "string"
+                  },
+                  "date": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "subtitle": {
+                    "type": "string"
+                  },
+                  "body": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "username": "user01",
+                  "title": "Novo post",
+                  "author": "Autor teste",
+                  "date": "18/10/2021",
+                  "subtitle": "Com uma legenda legal",
+                  "body": "Lorem ipsum aqui, como corpo do post.",
+                  "tags": ["VARIEDADES", "UTEIS"]
+                }
+              },
+              "in": "body"
+            } ]
+          }
+        },
+        "/posts/update": {
+          "put": {
+            "summary":"Cria um novo post a partir do objeto enviado no body do request.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["Posts"],
+            "responses": {
+              "200": {
+                "description":"A requisição foi bem sucedida e o post foi atualizado."
+              },
+              "400": {
+                "description":"O request não pôde ser completado porque o body não foi preenchido ou foi preenchido incorretamente."
+              },
+              "401": {
+                "description":"O request não pôde ser completado porque o usuário existe mas não possui autorização para continuar."
+              },
+              "404": {
+                "description":"O request não pôde ser completado porque o usuário não existe."
+              },
+              "406": {
+                "description": "O request não pôde ser completado porque houve alguma inconsistência no body ou porque a operação no banco falhou."
+              }
+            }
+          },
+          "parameters":[ {
+            "name": "Post",
+            "description": "Objeto post a ser atualizado no banco contendo o username do usuário que está fazendo o pedido.",
+            "schema": {
+              "description": "Objeto post a ser atualizado no banco contendo o username do usuário que está fazendo o pedido.",
+              "type": "object",
+              "properties": {
+                "post_id": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "subtitle": {
+                  "type": "string"
+                },
+                "body": {
+                  "type": "string"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "post_id": "0",
+                "username": "user01",
+                "title": "Título atualizado",
+                "author": "Auto atualizado",
+                "date": "18/10/2021",
+                "subtitle": "Legenda atualizada",
+                "body": "Corpo atualizado. Lembrando que o post_id não deve ser alterado, ou o update não será efetuado.",
+                "tags": ["VARIEDADES", "UTEIS"]
+              }
+            },
+            "in": "body"
+          } ]
+        },
+
+        "/posts/delete/{username}/{post_id}" : {
+          "delete": {
+            "summary":"Apaga um post a partir do post_id enviado no body do request.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["Posts"],
+            "responses": {
+              "200": {
+                "description":"A requisição foi bem sucedida e o post foi apagado."
+              },
+              "400": {
+                "description":"O request não pôde ser completado porque o body não foi preenchido ou foi preenchido incorretamente."
+              },
+              "406": {
+                "description": "O request não pôde ser completado porque houve alguma inconsistência no body ou porque a operação no banco falhou."
+              }
+            }
+          },
+          "parameters":[ {
+            "name": "post_id",
+            "description": "post_id do post a ser apagado do banco.",
+            "schema": {
+              "description": "post_id do post a ser apagado do banco.",
+              "type": "string",
+              "example": "0"
+            },
+            "in": "path"
+          },
+          {
+            "name": "username",
+            "description": "Usuário que fez a requisição.",
+            "schema": {
+              "description": "Usuário que fez a requisição.",
+              "type": "string",
+              "example": "user01"
+            },
+            "in": "path"
+          }
+         ]
+        },
+
+        "/user/{username}": {
+          "get": {
+            "summary": "Busca por um usuário a partir de seu username.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["User"],
+            "responses": {
+              "200": {
+                "description": "A requisição foi bem sucedida e o objeto usuário for devolvido."
+              },
+              "400": {
+                "description": "O request não pôde ser completado porque a operação no banco falhou."
+              },
+              "404": {
+                "description": "Não existem nenhum usuários com o nome de usuário procurado."
+              }
+            },
+            "parameters": [ {
+              "name": "username",
+              "description": "Nome de usuário a ser verificado/buscado no banco.",
+              "schema" : {
+                "description" : "username",
+                "type" : "string"
+              },
+              "example": "user01",
+              "in": "path"
+            } ]
+          }
+        },
+        "/user/new": {
+          "post": {
+            "summary": "Insere um usuário no banco.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["User"],
+            "responses": {
+              "200": {
+                "description": "A requisição foi bem sucedida e o objeto usuário foi inserido."
+              },
+              "400": {
+                "description": "O request não pôde ser completado porque a operação no banco falhou."
+              }
+            },
+            "parameters":[ {
+              "name": "User",
+              "description": "Objeto user a ser inserido no banco.",
+              "schema": {
+                "description": "Objeto user a ser inserido no banco.",
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "favorites": {
+                    "type": "array"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "_id": "0",
+                  "username": "user02",
+                  "favorites": [],
+                  "role": "user"
+                }
+              },
+              "in": "body"
+            } ]
+          }
+        },
+        "/user/update": {
+          "put": {
+            "summary": "Atualiza um usuário no banco.",
+            "produces": [
+              "application/json"
+            ],
+            "tags": ["User"],
+            "responses": {
+              "200": {
+                "description": "A requisição foi bem sucedida e o objeto usuário foi atualizado."
+              },
+              "400": {
+                "description": "O request não pôde ser completado porque a operação no banco falhou."
+              }
+            },
+            "parameters":[ {
+              "name": "User",
+              "description": "Objeto user a ser atualizado no banco.",
+              "schema": {
+                "description": "Objeto user a ser atualizado no banco.",
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "favorites": {
+                    "type": "array"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "_id": "0",
+                  "username": "user01",
+                  "favorites": ["0", "1"],
+                  "role": "user"
+                }
+              },
+              "in": "body"
+            } ]
+          }
+        }
+      },
+      "consumes": [
+        "application/json"
+      ]
+}
