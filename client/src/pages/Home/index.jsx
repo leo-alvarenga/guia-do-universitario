@@ -46,10 +46,10 @@ const Home = (props) => {
         dispatch(setLoading(true));
 
         try {
-            const response = await axios.get('/posts/'); // todo -> change this static route
+            const response = await axios.get('/api/posts'); // todo -> change this static route
 
-            setPosts(response.data?.posts);
-            setFiltered(response.data?.posts);
+            setPosts(response.data?.posts?.reverse());
+            setFiltered(response.data?.posts?.reverse());
             setErr(false);
         } catch (error) {
             setErr(true);
@@ -69,13 +69,11 @@ const Home = (props) => {
                     f.push(posts[i]);
             }
 
+            f.reverse();
+
             setFiltered([ ...f ]);
         } else {
-            if (posts?.lenght > 0) {
-                setFiltered([ ...posts ]);
-            } else {
-                setFiltered([]);
-            }
+            setFiltered([ ...posts ]);
         }
         
         setChosen(value);
