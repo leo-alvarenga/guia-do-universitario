@@ -4,5 +4,11 @@
   "main": "index.js",
   "author": "Leonardo A Alvarenga; Jeniffer Laila",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {},
+  "engines": {
+    "node": "14.8.1"
+  },
+  "scripts": {
+    "start": "cd service/ && npm install && node index.js"
+  }
 }
