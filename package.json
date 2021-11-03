@@ -9,7 +9,7 @@
     "node": "14.x"
   },
   "scripts": {
-    "build": "cd client/ && npm install && npm run build",
-    "start": "cd service/ && npm install && node index.js"
+    "build": "cd client/ && npm install && npm run build && cd ../service/ && npm install",
+    "start": "cd service/ && node index.js"
   }
 }
