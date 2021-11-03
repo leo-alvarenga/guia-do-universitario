@@ -27,7 +27,7 @@ const updateUser = async (username, favorites, role) => {
     const user = { username, favorites, role, };
 
     try {
-        const response = await axios.put('/api/user/update', { user });
+        const response = await axios.put('api/user/update', { user });
 
         setUserLocally(username, favorites, role);
     } catch (error) {

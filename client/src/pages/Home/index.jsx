@@ -32,7 +32,7 @@ const Home = (props) => {
         dispatch(setLoading(true));
 
         try {
-            const response = await axios.get('/api/tags/'); // todo -> change this static route
+            const response = await axios.get('api/tags/'); // todo -> change this static route
 
             setTags(response.data?.tags);
         } catch (error) {
@@ -46,7 +46,7 @@ const Home = (props) => {
         dispatch(setLoading(true));
 
         try {
-            const response = await axios.get('/posts/'); // todo -> change this static route
+            const response = await axios.get('api/posts/');
 
             setPosts(response.data?.posts);
             setFiltered(response.data?.posts);

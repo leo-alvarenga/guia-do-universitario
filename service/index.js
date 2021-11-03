@@ -11,17 +11,17 @@ const { connectDataBase, databaseClient } = require('./db/database');
 const PORT = process.env.PORT || 8080;
 
 const app = express();
+connectDataBase();
 
-// app.use(express.static(path.join(__dirname, '/../client/build')));
-
-// app.get("/", (req, res) => {
-//     res.sendFile(path.join(__dirname, '/../client/build/index.html'));
-// });
+app.use(express.static(path.join(__dirname, '/../client/build')));
 
 app.get("/", (req, res) => {
-    res.status(200).send('Ok');
+    res.sendFile(path.join(__dirname, '/../client/build/index.html'));
 });
-connectDataBase();
+
+// app.get("/", (req, res) => {
+//     res.status(200).send('Ok');
+// });
 
 app.use(cors());
 app.use(body_parser.json());

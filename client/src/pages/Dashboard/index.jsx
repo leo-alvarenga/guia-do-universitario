@@ -25,7 +25,7 @@ const Dashboard = (props) => {
     const [tags, setTags] = useState([]);
 
     const getTags = async () => {try {
-            const response = await axios.get('/api/tags/'); // todo -> change this static route
+            const response = await axios.get('api/tags/'); // todo -> change this static route
 
             setTags([ ...response.data?.tags ]);
         } catch (error) {

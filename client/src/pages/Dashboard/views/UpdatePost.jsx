@@ -92,7 +92,7 @@ const UpdatePost = (props) => {
 
     const getAll = async () => {
         try {
-            const response = await axios.get('/api/posts/');
+            const response = await axios.get('api/posts/');
 
             if (response) {
                 setDocs(response.data?.posts);
@@ -120,7 +120,7 @@ const UpdatePost = (props) => {
     const updateRequest = async () => {
         if (postHasChanges() === true) {
             try {
-                const response = await axios.put('/api/posts/update', post);
+                const response = await axios.put('api/posts/update', post);
 
                 setNotification(1);
             } catch (error) {
@@ -133,7 +133,7 @@ const UpdatePost = (props) => {
 
     const deleteRequest = async () => {
         try {
-            const response = await axios.delete(`/api/posts/delete/${post.username}/${post.post_id}`);
+            const response = await axios.delete(`api/posts/delete/${post.username}/${post.post_id}`);
 
             console.log('r', response);
 
