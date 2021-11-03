@@ -10,6 +10,6 @@
   },
   "scripts": {
     "build": "cd client/ && npm install && npm run build",
-    "start": "npm run build && cd service/ && npm install && node index.js"
+    "start": "cd service/ && npm install && node index.js"
   }
 }
