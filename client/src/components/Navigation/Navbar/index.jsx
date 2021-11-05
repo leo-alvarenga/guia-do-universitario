@@ -14,6 +14,9 @@ import LoginDialog from './LoginDialog';
 import NavbarMenu from './Menu';
 import ThemeSwitch from './ThemeSwitch';
 
+// assets
+import Logo from '../../../assets/guiauniversitario-logo.png'
+
 const Navbar = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [localTheme, setLocalTheme] = useState(props.darkMode);
@@ -59,7 +62,7 @@ const Navbar = (props) => {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Guia do Universitário
+                        <img style={{ maxHeight: '12vh' }} src={Logo} alt="Logo Guia do Universitario" />
                     </Typography>
 
                     <ThemeSwitch

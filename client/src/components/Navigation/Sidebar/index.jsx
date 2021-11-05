@@ -17,7 +17,11 @@ const Sidebar = (props) => {
     };
 
     const redirect = (link) => {
-        history.push(link);
+        if (link.startsWith('http')) {
+            window.open(link, '_blank');
+        } else {
+            history.push(link);
+        }
     };
 
     return (

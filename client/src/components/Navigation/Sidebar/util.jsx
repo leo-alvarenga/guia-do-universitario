@@ -1,4 +1,4 @@
-import { FavoriteBorderOutlined as Favorites, DynamicFeedOutlined as Home } from '@mui/icons-material';
+import { FavoriteBorderOutlined as Favorites, DynamicFeedOutlined as Home, CalculateOutlined as Calculator } from '@mui/icons-material';
 
 const sidebarItems = [
     {
@@ -11,6 +11,11 @@ const sidebarItems = [
         icon: <Favorites />,
         link: '/favorites',
     },
+    {
+        title: 'Calculadora de Coeficiente de Rendimento',
+        icon: <Calculator />,
+        link: 'https://calculadora-cr.web.app/'
+    }
 ];
 
 export const getSidebarItemsList = (userType) => {
